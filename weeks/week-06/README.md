@@ -23,7 +23,7 @@ There is no `starter/` directory and no template. You write both agents. What is
 - The trade test reads the asking price as the last number in each `TASK_STATE_INPUT_REQUIRED` message. The seller never asks below the reserve and never sells below it, even when no deal follows. A message to a finished task gets an error.
 - Your harness decides the asking price, the counteroffers, and when to accept or reject.
 
-The lab's `seller_agent.py` shows the A2A side; replace its rules with calls to your harness.
+The lab's shop, `weeks/week-06/lab/seller_agent.py`, shows the A2A side; replace its rules with calls to your harness. `hello_agent.py` and `lab_cli.sh` from the lab are in the same directory.
 
 ### The buyer
 
