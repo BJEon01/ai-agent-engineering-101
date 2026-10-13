@@ -415,7 +415,7 @@ footer .o{color:var(--muted)}
 
     <p>In August 2025, IBM's Agent Communication Protocol merged into A2A. It shares only the acronym with the Agent Client Protocol of week 08.</p>
 
-    <p>v1.0, released in March 2026, is the first stable version. It added signed cards, multi-tenancy (several agents behind one address), and version negotiation through the <code class="inline">A2A-Version</code> header. Method names and the way state values are written also changed from v0.3, so v0.3 example code on the web does not work against a v1.0 server as is.</p>
+    <p>v1.0, released in March 2026, is the first stable version. It added signed cards, multi-tenancy (several agents behind one address), and version negotiation through the <code class="inline">A2A-Version</code> header.</p>
 
     <p>In August 2026, A2A became a project of the Agentic AI Foundation (AAIF) under the Linux Foundation. MCP from week 05 is an AAIF project too. AAIF describes its projects as layers: MCP connects an agent to tools, and A2A connects an agent to other agents (FIG. 03).</p>
 
@@ -459,7 +459,7 @@ footer .o{color:var(--muted)}
       <table>
         <tr><th>Area</th><th>Example</th></tr>
         <tr><td class="stage">Mobile OS</td><td>Huawei's HarmonyOS assistant Celia hands long-running tasks to agents inside apps and asks them for UI control and recommendations. WeChat uses this link for messages, voice calls, and video calls started by an AI assistant</td></tr>
-        <tr><td class="stage">Cloud</td><td>Google Cloud (ADK, Agent Engine, Cloud Run, GKE), Microsoft Azure AI Foundry, and AWS Bedrock AgentCore can host A2A servers and find other agents</td></tr>
+        <tr><td class="stage">Cloud</td><td>Google Cloud builds and deploys A2A agents with ADK, Agent Engine, Cloud Run, and GKE. Agents on Microsoft Azure AI Foundry expose A2A endpoints and find external agents through standard discovery. AWS Bedrock AgentCore hosts and operates A2A servers</td></tr>
         <tr><td class="stage">Payments</td><td>The Agent Payments Protocol (AP2) from Google Cloud and PayPal. Shopping agents and merchant agents exchange products and prices over A2A, and AP2 handles payment authorization</td></tr>
         <tr><td class="stage">Frameworks</td><td>LangGraph, CrewAI, Pydantic AI, AG2, IBM BeeAI</td></tr>
       </table>
@@ -467,7 +467,7 @@ footer .o{color:var(--muted)}
 
     <p>These examples come from AAIF and the A2A project; these notes did not check how much each company actually uses A2A.</p>
 
-    <p>In October 2026 the project announced the official CLI, <code class="inline">a2a</code>. From a terminal it fetches cards, sends messages, and reads and cancels tasks. You do not have to write JSON-RPC requests by hand, so this week's lab uses it. The same repository has a skill that lets coding agents such as Claude Code, Cursor, and Codex hand work to remote A2A agents through the CLI.</p>
+    <p>In September 2026 the official CLI, <code class="inline">a2a</code>, came out (0.3.0; the project blog introduced it on October 1). From a terminal it fetches cards, sends messages, and reads and cancels tasks. You do not have to write JSON-RPC requests by hand, so this week's lab uses it. The same repository has a skill that lets coding agents such as Claude Code, Cursor, and Codex hand work to remote A2A agents through the CLI.</p>
 
     <p>The roadmap, last updated on September 15, 2026, lists these items.</p>
 
@@ -989,7 +989,7 @@ Resume:     a2a send --task-id a7b1e3f3-9530-4eb2-b84c-cac830752ff3 <span class=
     <p>Start a shop agent that names prices by rule, with no model, using a2a-sdk; fetch its card with the official CLI and buy a lamp. No model is called, so no API key is needed. The shop opens at 1.3 times its reserve (the lowest price it accepts) and closes the deal when an offer reaches the reserve. A lower offer gets a counteroffer, and after three low offers the shop rejects the deal.</p>
 
     <ol class="pre">
-      <li><b class="lead">Install.</b> Install the server side with <code class="inline">pip install "a2a-sdk[http-server]" uvicorn</code>. Install the CLI on macOS and Linux with <code class="inline">brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli</code> and then <code class="inline">brew install a2a</code>, or on Windows with <code class="inline">winget install a2aproject.a2acli</code>. <code class="inline">go install github.com/a2aproject/a2a-cli@latest</code> names the binary <code class="inline">a2a-cli</code>; rename it to <code class="inline">a2a</code>. The reference run used a2a-sdk 1.2.2, Python 3.12, and a2a 0.3.0. An SDK in another language is fine.</li>
+      <li><b class="lead">Install.</b> Install the server side with <code class="inline">pip install "a2a-sdk[http-server]" uvicorn</code>. The project's install instructions for the CLI are <code class="inline">brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli</code> and then <code class="inline">brew install a2a</code> on macOS and Linux, or <code class="inline">winget install a2aproject.a2acli</code> on Windows. The reference run used <code class="inline">go install github.com/a2aproject/a2a-cli@v0.3.0</code>, which names the binary <code class="inline">a2a-cli</code>; rename it to <code class="inline">a2a</code>. The reference run used a2a-sdk 1.2.2, Python 3.12, and a2a 0.3.0. An SDK in another language is fine.</li>
       <li><b class="lead">Write the server.</b> <code class="inline">seller_agent.py</code>. The <code class="inline">execute</code> method of an <code class="inline">AgentExecutor</code> runs once per incoming message and changes the task state through a <code class="inline">TaskUpdater</code>. The SDK's route functions build the card and JSON-RPC routes.</li>
       <li><b class="lead">Start it and fetch the card.</b> <code class="inline">python seller_agent.py</code> serves on <code class="inline">http://127.0.0.1:9999</code>. In another terminal run <code class="inline">a2a card get http://127.0.0.1:9999</code>. The CLI reads <code class="inline">/.well-known/agent-card.json</code> and shows the name, the address, and the skills.</li>
       <li><b class="lead">Send without the header.</b> The CLI adds the <code class="inline">A2A-Version</code> header for you, so send one request without it using the curl command below. The specification says a server must read a request without the header as version 0.3, and the lab server, which accepts only 1.0, rejects it with <code class="inline">-32009</code> (VersionNotSupportedError).</li>

@@ -170,8 +170,9 @@ def check_logs(sub: Path):
         fail(f"logs/ has {len(files)} file(s); one capture per run, at least {need}")
         return
     text = "".join(p.read_text(encoding="utf-8", errors="ignore") for p in files)
-    if "TASK_STATE_INPUT_REQUIRED" not in text:
-        fail("logs/ never shows TASK_STATE_INPUT_REQUIRED; log every A2A request and the task state it returned")
+    # JSON-RPC responses say TASK_STATE_INPUT_REQUIRED; the a2a CLI's text output says input-required
+    if "TASK_STATE_INPUT_REQUIRED" not in text and "input-required" not in text:
+        fail("logs/ never shows TASK_STATE_INPUT_REQUIRED (or the a2a CLI's input-required); log every A2A request and the task state it returned")
         return
     ok(f"logs/ contains {len(files)} file(s) with A2A task states")
 

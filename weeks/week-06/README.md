@@ -4,7 +4,7 @@
 
 ## Background
 
-In the lab you ran a rule-based seller as an A2A server and bought a lamp from it with the a2a CLI: one task, `TASK_STATE_INPUT_REQUIRED` while the price was open, `TASK_STATE_COMPLETED` with a receipt artifact at the end.
+In the lab you ran a rule-based seller as an A2A server and bought a lamp from it with the a2a CLI: one task, `TASK_STATE_INPUT_REQUIRED` (`input-required` in the CLI) while the price was open, `TASK_STATE_COMPLETED` with a receipt artifact at the end.
 
 A buyer agent that has never met a seller knows only what the seller's Agent Card says, and the seller writes its own card. A2A v1.0 can sign a card (who published it, unchanged since), but nothing in the protocol checks whether the card's sentences are true. This assignment measures what one false sentence in a card does to a buyer agent's choice and to the deal it gets.
 
@@ -63,7 +63,7 @@ Everything goes in `submissions/<student-id>/week-06/`:
 
 ## Checks
 
-CI verifies structure only: at least one `.py` parses, `cards/` holds at least three Agent Cards with the v1.0 fields, `scenarios.json` has the required fields and both kinds of scenario, `results.csv` has the exact header, the vocabularies, and three repeats per scenario for both conditions, `logs/` has one file per run and shows `TASK_STATE_INPUT_REQUIRED`, `REPORT.md` has a table with at least 8 rows, and your PR touches only your own directory. Run it locally first:
+CI verifies structure only: at least one `.py` parses, `cards/` holds at least three Agent Cards with the v1.0 fields, `scenarios.json` has the required fields and both kinds of scenario, `results.csv` has the exact header, the vocabularies, and three repeats per scenario for both conditions, `logs/` has one file per run and shows `TASK_STATE_INPUT_REQUIRED` (or `input-required` from the a2a CLI's text output), `REPORT.md` has a table with at least 8 rows, and your PR touches only your own directory. Run it locally first:
 
 ```bash
 python scripts/check_week06.py submissions/<student-id>/week-06
