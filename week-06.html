@@ -289,7 +289,7 @@ footer .o{color:var(--muted)}
         <tr><td class="stage">A4</td><td>Task: 맡긴 일의 상태와 결과물</td></tr>
         <tr><td class="stage">A5</td><td>FIPA-ACL과 A2A</td></tr>
         <tr><td class="stage">토론</td><td>Agent Card의 주장을 누가 확인하는가</td></tr>
-        <tr><td class="stage">LAB</td><td>가게 에이전트를 A2A server로 띄우고 a2a CLI로 거래하기</td></tr>
+        <tr><td class="stage">LAB</td><td>A2A server를 띄우고 a2a CLI로 가게와 거래하기</td></tr>
         <tr><td class="stage">HW</td><td>Agent Card 광고 실험</td></tr>
       </table>
     </div>
@@ -554,7 +554,31 @@ footer .o{color:var(--muted)}
 
     <p>client는 잘 알려진 주소(well-known URI) 말고도, 카드를 모아 둔 registry에서 찾거나 미리 설정해 둔 카드 주소를 쓸 수 있다.</p>
 
-    <p>FIPA에서는 에이전트 플랫폼의 Directory Facilitator(DF)가 이 일을 했다. 에이전트가 자기 서비스를 DF에 등록하고, 다른 에이전트는 서비스 종류로 DF를 검색했다(yellow pages). A2A에서는 에이전트마다 자기 도메인에 카드를 올리고, registry는 필요할 때 쓴다(FIG. 05).</p>
+    <h3><span class="tag">FIPA</span>Directory Facilitator: FIPA의 에이전트 찾기</h3>
+    <p>FIPA 규격에서 에이전트는 에이전트 플랫폼(agent platform) 위에서 돌아간다. AMS(Agent Management System)는 플랫폼마다 하나씩 있고, 에이전트의 이름과 주소를 관리한다. 규격은 AMS를 white pages, DF(Directory Facilitator)를 yellow pages라고 부른다. 전화번호부의 인명편과 업종편을 가리키는 말로, AMS에서는 이름으로, DF에서는 서비스 종류로 상대를 찾는다.</p>
+
+    <p>에이전트는 DF에 register, deregister, modify, search를 요청할 수 있다. 요청은 4주차의 FIPA-ACL 메시지로 보내고, 절차는 fipa-request를 따른다. 램프 가게가 DF에 등록하는 메시지를 FIPA 형식으로 쓰면 이렇다.</p>
+
+    <div class="code"><span class="file">FIPA-ACL: DF에 가게 등록하기 (SC00023K 형식으로 쓴 예)</span><pre>(<span class="kw">request</span>
+  :sender   (agent-identifier :name lamp-shop@shop.example)
+  :receiver (set (agent-identifier :name df@platform.example))
+  :language fipa-sl0
+  :ontology FIPA-Agent-Management
+  :protocol fipa-request
+  :content
+    <span class="st">"((action (agent-identifier :name df@platform.example)
+        (register
+          (df-agent-description
+            :name (agent-identifier :name lamp-shop@shop.example)
+            :protocols (set fipa-request)
+            :languages (set fipa-sl0)
+            :services (set (service-description
+                             :name lamp-sale
+                             :type furniture-seller))))))"</span>)</pre></div>
+
+    <p>buyer는 같은 <code class="inline">df-agent-description</code> 형식에 찾는 조건(예: <code class="inline">:type furniture-seller</code>)만 적어 DF에 search를 보내고, 조건에 맞는 에이전트 목록을 받는다. 규격은 DF를 에이전트 목록을 맡는 믿을 만한 관리자로 정의하고, 목록을 정확하고 빠짐없이 최신으로 유지하려 애써야 한다고 적는다.</p>
+
+    <p>A2A에는 이런 중앙 목록이 필수가 아니다. 에이전트마다 자기 주소에 카드를 올리고, client가 카드를 직접 받는다. registry는 필요할 때 쓴다(FIG. 05). DF 등록 정보와 Agent Card는 하는 일이 같다. 서비스 이름과 종류는 skill로, 지원하는 protocol과 language는 <code class="inline">supportedInterfaces</code>와 입출력 형식(<code class="inline">defaultInputModes</code>)으로 옮겨 갔다.</p>
 
     <div class="fig" id="fig5">
       <svg viewBox="0 0 680 248" role="img" aria-label="FIPA: agents register with one Directory Facilitator and buyers search it. A2A: each agent serves its own card; the buyer fetches cards directly, a registry is optional">
@@ -976,82 +1000,273 @@ Resume:     a2a send --task-id a7b1e3f3-9530-4eb2-b84c-cac830752ff3 <span class=
 <div class="col">
   <div class="part">
     <div class="lbl">PART B: LAB</div>
-    <h2>가게 에이전트를 A2A server로 띄운다</h2>
-    <div class="meta">GOAL: run a rule-based seller as an A2A server, take one purchase to COMPLETED with the a2a CLI, and reach REJECTED and CANCELED once each</div>
+    <h2>A2A server를 띄우고 가게와 거래한다</h2>
+    <div class="meta">GOAL: run the echo server, a hello agent, and a rule-based seller as A2A servers; take one purchase to COMPLETED with the a2a CLI and reach REJECTED and CANCELED once each</div>
   </div>
 </div>
 
 <section>
   <div class="col">
-    <div class="secmark"><span class="no">LAB</span><h2>Lamp Shop을 띄우고 a2a CLI로 거래한다</h2></div>
-    <p>모델 없이 규칙으로 값을 부르는 가게 에이전트를 a2a-sdk로 띄우고, 공식 CLI로 카드를 받은 뒤 램프를 산다. 모델을 부르지 않으므로 API 키 없이 돌아간다. 가게는 처음에 하한가(reserve)의 1.3배를 부르고, reserve 이상의 값이 오면 거래를 끝낸다. 낮은 값이 오면 역제안하고, 낮은 값을 세 번 받으면 거래를 거절한다.</p>
+    <div class="secmark"><span class="no">LAB</span><h2>A2A server 세 개를 차례로 띄운다</h2></div>
+    <p>코드 없이 띄우는 echo server, 30줄짜리 hello 에이전트, 흥정하는 가게 에이전트 순서로 A2A server를 띄우고, 공식 CLI <code class="inline">a2a</code>로 말을 건다. 모델을 부르지 않으므로 API 키가 필요 없다. 터미널 두 개를 쓴다. 터미널 1에서는 server를 띄워 두고, 터미널 2에서 CLI 명령을 보낸다.</p>
+
+    <h3><span class="tag">STEP 1</span>준비</h3>
+    <p>Python은 3.10 이상이어야 한다. <code class="inline">python3 --version</code>이 그보다 낮으면 python.org나 <code class="inline">brew install python@3.12</code>로 새로 설치한다. 참조 실행은 Python 3.12, a2a-sdk 1.2.2, uvicorn 0.54.0, a2a CLI 0.3.0이다.</p>
+
+    <div class="code"><span class="file">터미널 1</span><pre>python3 --version                    <span class="cm"># 3.10 이상</span>
+mkdir a2a-lab &amp;&amp; cd a2a-lab
+python3 -m venv .venv
+source .venv/bin/activate            <span class="cm"># Windows: .venv\Scripts\activate</span>
+pip install <span class="st">"a2a-sdk[http-server]"</span> uvicorn
+
+<span class="cm"># a2a CLI: macOS, Linux</span>
+brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli
+brew trust --formula a2aproject/a2a-cli/a2a   <span class="cm"># Homebrew가 untrusted tap이라며 거절할 때</span>
+brew install a2a
+<span class="cm"># a2a CLI: Windows</span>
+winget install a2aproject.a2acli
+
+a2a version                          <span class="cm"># a2a 0.3.0</span></pre></div>
+
+    <h3><span class="tag">STEP 2</span>코드 없이 A2A server 띄우기</h3>
+    <p>CLI에는 받은 말을 그대로 돌려주는 echo server가 들어 있다. 터미널 1에서 띄우고, 터미널 2에서 메시지를 보낸다.</p>
+
+    <div class="code"><span class="file">터미널 1</span><pre>a2a server --echo --port 8080</pre></div>
+    <div class="code"><span class="file">터미널 2</span><pre>$ a2a send -a http://localhost:8080 <span class="st">"hello A2A"</span>
+Task:     01a133e9-a808-741a-9718-61d315e93f75
+Context:  01a133e9-a808-7501-949a-7f2576fb38af
+Status:   completed (2026-10-13T15:18:33+09:00)
+Artifacts:
+  [01a133e9-a808-75b8-81eb-2483cf7cfcc9] hello A2A
+History:
+  [user] hello A2A</pre></div>
+
+    <p>메시지 하나가 task 하나가 됐고, 보낸 말이 artifact로 돌아왔다. <code class="inline">a2a card get http://localhost:8080</code>으로 echo server의 카드도 받아 본다. 확인했으면 터미널 1에서 Ctrl+C로 끈다.</p>
+
+    <h3><span class="tag">STEP 3</span>가장 작은 A2A server 만들기</h3>
+    <p>a2a-sdk로 만든 hello 에이전트다. 어떤 메시지가 와도 &ldquo;Hello! You said: &hellip;&rdquo;로 답하고 task를 끝낸다. A2A server에 꼭 있어야 하는 것만 넣었다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>부분</th><th>하는 일</th></tr>
+        <tr><td class="stage">Hello.execute</td><td>메시지가 올 때마다 불린다. task를 만들고, 답을 붙여 completed로 바꾼다</td></tr>
+        <tr><td class="stage">card</td><td>Agent Card. 이름, 설명, 주소, skill을 적는다</td></tr>
+        <tr><td class="stage">handler, app</td><td>카드 경로(<code class="inline">/.well-known/agent-card.json</code>)와 JSON-RPC 경로(<code class="inline">/</code>)를 만들고 9000번 포트로 띄운다</td></tr>
+      </table>
+    </div>
+
+    <div class="code"><span class="file">hello_agent.py</span><pre>import uvicorn
+from starlette.applications import Starlette
+
+from a2a.helpers import get_message_text, new_task_from_user_message, new_text_part
+from a2a.server.agent_execution import AgentExecutor
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.routes import create_agent_card_routes, create_jsonrpc_routes
+from a2a.server.tasks import InMemoryTaskStore, TaskUpdater
+from a2a.types import AgentCapabilities, AgentCard, AgentInterface, AgentSkill
+
+
+class Hello(AgentExecutor):
+    async def execute(self, context, event_queue):
+        task = new_task_from_user_message(context.message)<span class="cm">  # every message starts a new task</span>
+        await event_queue.enqueue_event(task)
+        up = TaskUpdater(event_queue=event_queue, task_id=task.id, context_id=task.context_id)
+        text = get_message_text(context.message)
+        await up.complete(up.new_agent_message(parts=[new_text_part(f"Hello! You said: {text}")]))
+
+    async def cancel(self, context, event_queue):
+        pass
+
+
+card = AgentCard(
+    name="Hello Agent",
+    description="Says hello back.",
+    version="1.0.0",
+    default_input_modes=["text/plain"],
+    default_output_modes=["text/plain"],
+    capabilities=AgentCapabilities(),
+    supported_interfaces=[AgentInterface(protocol_binding="JSONRPC", url="http://127.0.0.1:9000/", protocol_version="1.0")],
+    skills=[AgentSkill(id="hello", name="Say hello", description="Replies to any message.", tags=["demo"])],
+)
+handler = DefaultRequestHandler(agent_executor=Hello(), task_store=InMemoryTaskStore(), agent_card=card)
+app = Starlette(routes=create_agent_card_routes(card) + create_jsonrpc_routes(handler, "/"))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=9000)</pre></div>
+
+    <div class="code"><span class="file">터미널 1</span><pre>python hello_agent.py</pre></div>
+    <div class="code"><span class="file">터미널 2</span><pre>$ a2a card get http://127.0.0.1:9000
+Name:         Hello Agent
+Description:  Says hello back.
+Version:      1.0.0
+Interfaces:
+  JSONRPC      http://127.0.0.1:9000/
+Streaming:    false
+Skills:
+  hello                Say hello
+
+$ a2a send -a http://127.0.0.1:9000 <span class="st">"hi there"</span>
+Task:     880a8f06-469f-47c8-95f8-f8d5cf439a40
+Context:  d2932be2-8312-473d-b3a1-11626bc564dd
+Status:   completed (2026-10-13T06:18:53Z)
+  Hello! You said: hi there
+History:
+  [user] hi there</pre></div>
+
+    <p>터미널 1의 server 로그를 보면, <code class="inline">a2a send</code> 한 번에 요청이 두 개 찍힌다. 먼저 <code class="inline">GET /.well-known/agent-card.json</code>으로 카드를 읽고, 카드에 적힌 주소로 <code class="inline">POST /</code>를 보낸다(FIG. 04의 순서).</p>
+
+    <div class="code"><span class="file">터미널 1: server 로그</span><pre>INFO:     127.0.0.1:57854 - "GET /.well-known/agent-card.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57854 - "POST / HTTP/1.1" 200 OK</pre></div>
+
+    <h3><span class="tag">STEP 4</span>가게 에이전트 띄우기</h3>
+    <p><code class="inline">seller_agent.py</code>는 hello 에이전트의 뼈대에 흥정 규칙을 넣은 것이다. 가게는 처음에 하한가(reserve)의 1.3배를 부르고, reserve 이상의 값이 오면 영수증 artifact를 붙여 거래를 끝낸다. 낮은 값이 오면 역제안하고, 낮은 값을 세 번 받으면 거래를 거절한다. 거래 중인 task는 <code class="inline">self.open</code>에 task id로 기억한다. 과제의 가게 두 곳도 이 파일에서 시작하면 된다.</p>
+
+    <div class="code"><span class="file">seller_agent.py</span><pre>"""A rule-based seller exposed as an A2A server (a2a-sdk 1.2.x, JSON-RPC binding).
+
+    python seller_agent.py                     <span class="cm">  # lamp shop on :9999</span>
+    python seller_agent.py --config cards/b.json # another seller from a config file
+
+No model inside: the seller asks for an offer (INPUT_REQUIRED), counters, and
+either closes with a receipt artifact (COMPLETED) or walks away (REJECTED).
+"""
+import argparse
+import json
+import math
+import re
+
+import uvicorn
+from starlette.applications import Starlette
+
+from a2a.helpers import get_message_text, new_data_part, new_task_from_user_message, new_text_part
+from a2a.server.agent_execution import AgentExecutor, RequestContext
+from a2a.server.events import EventQueue
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.routes import create_agent_card_routes, create_jsonrpc_routes
+from a2a.server.tasks import InMemoryTaskStore, TaskUpdater
+from a2a.types import AgentCapabilities, AgentCard, AgentInterface, AgentSkill
+
+DEFAULT = {
+    "name": "Lamp Shop",
+    "description": "Sells desk lamps, chairs and bookshelves. Negotiates the price with the buyer.",
+    "skill_description": "Ask for an item, then send a price. The shop answers with a counteroffer or a receipt.",
+    "port": 9999,
+    "reserve": {"lamp": 100, "chair": 180, "bookshelf": 260},
+    "max_rounds": 3,
+}
+
+
+class Seller(AgentExecutor):
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.open = {}<span class="cm">  # task id -&gt; {"item", "ask", "rounds"}</span>
+
+    async def execute(self, context: RequestContext, event_queue: EventQueue) -&gt; None:
+        task = context.current_task
+        if task is None:
+            task = new_task_from_user_message(context.message)
+            await event_queue.enqueue_event(task)
+        up = TaskUpdater(event_queue=event_queue, task_id=task.id, context_id=task.context_id)
+        say = lambda text: up.new_agent_message(parts=[new_text_part(text)])
+        text = get_message_text(context.message) or ""
+        deal = self.open.get(task.id)
+
+        if deal is None:<span class="cm">  # first message: which item?</span>
+            item = next((k for k in self.cfg["reserve"] if k in text.lower()), None)
+            if item is None:
+                await up.reject(say("We only sell: " + ", ".join(self.cfg["reserve"]) + "."))
+                return
+            ask = math.ceil(self.cfg["reserve"][item] * 1.3)
+            self.open[task.id] = {"item": item, "ask": ask, "rounds": 0}
+            await up.requires_input(say(f"{item}: asking {ask}. Send your offer as a number."))
+            return
+
+        m = re.search(r"\d+", text)
+        if m is None:
+            await up.requires_input(say("Send your offer as a number."))
+            return
+        offer, reserve = int(m.group()), self.cfg["reserve"][deal["item"]]
+        if offer &gt;= reserve:
+            receipt = {"seller": self.cfg["name"], "item": deal["item"], "price": offer}
+            await up.add_artifact(parts=[new_data_part(receipt)], name="receipt")
+            await up.complete(say(f"Deal: {deal['item']} at {offer}."))
+            del self.open[task.id]
+            return
+        deal["rounds"] += 1
+        if deal["rounds"] &gt;= self.cfg["max_rounds"]:
+            await up.reject(say(f"No deal at {offer}."))
+            del self.open[task.id]
+            return
+        deal["ask"] = max(reserve, (offer + deal["ask"]) // 2)
+        await up.requires_input(say(f"{offer} is too low. Counteroffer: {deal['ask']}."))
+
+    async def cancel(self, context: RequestContext, event_queue: EventQueue) -&gt; None:
+        task = context.current_task
+        self.open.pop(task.id, None)
+        await TaskUpdater(event_queue=event_queue, task_id=task.id, context_id=task.context_id).cancel()
+
+
+def build(cfg):
+    url = f"http://127.0.0.1:{cfg['port']}/"
+    card = AgentCard(
+        name=cfg["name"],
+        description=cfg["description"],
+        version="1.0.0",
+        default_input_modes=["text/plain"],
+        default_output_modes=["application/json", "text/plain"],
+        capabilities=AgentCapabilities(streaming=True),
+        supported_interfaces=[AgentInterface(protocol_binding="JSONRPC", url=url, protocol_version="1.0")],
+        skills=[AgentSkill(
+            id="negotiate",
+            name="Negotiate a purchase",
+            description=cfg["skill_description"],
+            tags=["shopping", "negotiation"],
+            examples=["I want to buy a lamp", "90"],
+        )],
+    )
+    handler = DefaultRequestHandler(agent_executor=Seller(cfg), task_store=InMemoryTaskStore(), agent_card=card)
+    return Starlette(routes=create_agent_card_routes(card) + create_jsonrpc_routes(handler, "/"))
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config")
+    ap.add_argument("--port", type=int)
+    args = ap.parse_args()
+    cfg = dict(DEFAULT)
+    if args.config:
+        cfg.update(json.load(open(args.config)))
+    if args.port:
+        cfg["port"] = args.port
+    uvicorn.run(build(cfg), host="127.0.0.1", port=cfg["port"], log_level="warning")</pre></div>
+
+    <div class="code"><span class="file">터미널 1</span><pre>python seller_agent.py               <span class="cm"># http://127.0.0.1:9999</span></pre></div>
+
+    <h3><span class="tag">STEP 5</span>가게와 거래하기</h3>
+    <p>터미널 2에서 아래 순서대로 보낸다. 출력의 마지막 줄 <code class="inline">Resume</code>이 다음에 칠 명령을 보여 준다.</p>
 
     <ol class="pre">
-      <li><b class="lead">설치한다.</b> server는 <code class="inline">pip install "a2a-sdk[http-server]" uvicorn</code>으로 설치한다. CLI는 프로젝트 안내대로 macOS와 Linux에서 <code class="inline">brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli</code> 뒤 <code class="inline">brew install a2a</code>, Windows에서 <code class="inline">winget install a2aproject.a2acli</code>로 설치한다. 참조 실행은 <code class="inline">go install github.com/a2aproject/a2a-cli@v0.3.0</code>으로 받았고, 이렇게 받으면 실행 파일 이름이 <code class="inline">a2a-cli</code>이므로 <code class="inline">a2a</code>로 바꾼다. 참조 실행은 a2a-sdk 1.2.2, Python 3.12, a2a 0.3.0이다. 다른 언어의 SDK를 써도 된다.</li>
-      <li><b class="lead">server를 만든다.</b> <code class="inline">seller_agent.py</code>. <code class="inline">AgentExecutor</code>의 <code class="inline">execute</code>가 메시지 하나를 받을 때마다 불리고, <code class="inline">TaskUpdater</code>로 task 상태를 바꾼다. 카드와 JSON-RPC 경로는 SDK의 route 함수가 만든다.</li>
-      <li><b class="lead">띄우고 카드를 받는다.</b> <code class="inline">python seller_agent.py</code>로 <code class="inline">http://127.0.0.1:9999</code>에 띄우고, 다른 터미널에서 <code class="inline">a2a card get http://127.0.0.1:9999</code>를 실행한다. CLI가 <code class="inline">/.well-known/agent-card.json</code>을 읽어 이름, 주소, skill을 보여 준다.</li>
+      <li><b class="lead">카드를 받는다.</b> <code class="inline">a2a card get http://127.0.0.1:9999</code>. Interfaces가 <code class="inline">JSONRPC http://127.0.0.1:9999/</code>이고 skill이 <code class="inline">negotiate</code>다.</li>
       <li><b class="lead">헤더 없이 보낸다.</b> CLI는 <code class="inline">A2A-Version</code> 헤더를 알아서 붙이므로, 헤더가 빠진 요청은 아래 curl 명령으로 한 번 보낸다. 규격상 헤더가 없으면 server는 0.3 요청으로 해석해야 하고, 1.0만 받는 실습 server는 <code class="inline">-32009</code>(VersionNotSupportedError)로 거절한다.</li>
-      <li><b class="lead">램프를 산다.</b> <code class="inline">a2a send -a http://127.0.0.1:9999 "I want to buy a lamp"</code>를 보낸다. 출력 마지막 줄의 <code class="inline">Resume</code> 명령처럼 <code class="inline">--task-id</code>를 붙여 80, 105를 차례로 보낸다. completed와 영수증 artifact가 온 뒤 <code class="inline">a2a task get</code>을 실행하면 History에 메시지 5개가 남아 있다.</li>
+      <li><b class="lead">램프를 산다.</b> <code class="inline">a2a send</code>로 &ldquo;I want to buy a lamp&rdquo;를 보낸 뒤, <code class="inline">--task-id</code>를 붙여 80, 105를 차례로 보낸다. completed와 영수증 artifact가 온 뒤 <code class="inline">a2a task get</code>을 실행하면 History에 메시지 5개가 남아 있다.</li>
       <li><b class="lead">끝난 task에 다시 보낸다.</b> 같은 <code class="inline">--task-id</code>로 110을 보내면 <code class="inline">UNSUPPORTED_OPERATION</code> 오류가 나고 exit code 1로 끝난다.</li>
       <li><b class="lead">나머지 terminal 상태를 만든다.</b> 가게에 없는 sofa를 찾으면 rejected, chair에 100을 세 번 부르면 rejected, 거래 중인 bookshelf task에 <code class="inline">a2a task cancel</code>을 보내면 canceled가 된다.</li>
     </ol>
 
-    <div class="code"><span class="file">seller_agent.py (핵심 부분)</span><pre><span class="kw">class</span> Seller(AgentExecutor):
-    <span class="kw">async def</span> execute(self, context, event_queue):
-        task = context.current_task
-        <span class="kw">if</span> task <span class="kw">is None</span>:                                   <span class="cm"># 첫 메시지: task를 만든다</span>
-            task = new_task_from_user_message(context.message)
-            <span class="kw">await</span> event_queue.enqueue_event(task)
-        up = TaskUpdater(event_queue=event_queue, task_id=task.id, context_id=task.context_id)
-        say = <span class="kw">lambda</span> text: up.new_agent_message(parts=[new_text_part(text)])
-        text = get_message_text(context.message) <span class="kw">or</span> <span class="st">""</span>
-        deal = self.open.get(task.id)
-
-        <span class="kw">if</span> deal <span class="kw">is None</span>:                                   <span class="cm"># 어떤 물건인가</span>
-            item = next((k <span class="kw">for</span> k <span class="kw">in</span> self.cfg[<span class="st">"reserve"</span>] <span class="kw">if</span> k <span class="kw">in</span> text.lower()), <span class="kw">None</span>)
-            <span class="kw">if</span> item <span class="kw">is None</span>:
-                <span class="kw">await</span> up.reject(say(<span class="st">"We only sell: ..."</span>))        <span class="cm"># REJECTED</span>
-                <span class="kw">return</span>
-            ask = math.ceil(self.cfg[<span class="st">"reserve"</span>][item] * 1.3)
-            self.open[task.id] = {<span class="st">"item"</span>: item, <span class="st">"ask"</span>: ask, <span class="st">"rounds"</span>: 0}
-            <span class="kw">await</span> up.requires_input(say(f<span class="st">"{item}: asking {ask}. Send your offer as a number."</span>))
-            <span class="kw">return</span>
-
-        offer = int(re.search(<span class="st">r"\d+"</span>, text).group())
-        <span class="kw">if</span> offer &gt;= self.cfg[<span class="st">"reserve"</span>][deal[<span class="st">"item"</span>]]:
-            <span class="kw">await</span> up.add_artifact(parts=[new_data_part({<span class="st">"seller"</span>: ..., <span class="st">"item"</span>: ..., <span class="st">"price"</span>: offer})],
-                                  name=<span class="st">"receipt"</span>)
-            <span class="kw">await</span> up.complete(say(f<span class="st">"Deal: {deal['item']} at {offer}."</span>))   <span class="cm"># COMPLETED</span>
-            <span class="kw">return</span>
-        ...                                                   <span class="cm"># 역제안(INPUT_REQUIRED) 또는 거절(REJECTED)</span>
-
-    <span class="kw">async def</span> cancel(self, context, event_queue):         <span class="cm"># CancelTask</span>
-        task = context.current_task
-        <span class="kw">await</span> TaskUpdater(event_queue=event_queue, task_id=task.id, context_id=task.context_id).cancel()
-
-card = AgentCard(name=<span class="st">"Lamp Shop"</span>, ..., supported_interfaces=[
-    AgentInterface(protocol_binding=<span class="st">"JSONRPC"</span>, url=<span class="st">"http://127.0.0.1:9999/"</span>, protocol_version=<span class="st">"1.0"</span>)],
-    skills=[AgentSkill(id=<span class="st">"negotiate"</span>, ...)])
-handler = DefaultRequestHandler(agent_executor=Seller(cfg), task_store=InMemoryTaskStore(), agent_card=card)
-app = Starlette(routes=create_agent_card_routes(card) + create_jsonrpc_routes(handler, <span class="st">"/"</span>))</pre></div>
-
-    <div class="code"><span class="file">a2a CLI 명령</span><pre><span class="cm"># 카드 받기</span>
-a2a card get http://127.0.0.1:9999
-<span class="cm"># 첫 메시지: 새 task가 생긴다</span>
+    <div class="code"><span class="file">터미널 2: 명령 모음</span><pre><span class="cm"># 첫 메시지: 새 task가 생긴다</span>
 a2a send -a http://127.0.0.1:9999 <span class="st">"I want to buy a lamp"</span>
 <span class="cm"># 같은 task에 이어 보내기</span>
 a2a send -a http://127.0.0.1:9999 --task-id &lt;task id&gt; 80
 <span class="cm"># 조회와 취소</span>
 a2a task get    -a http://127.0.0.1:9999 &lt;task id&gt;
 a2a task cancel -a http://127.0.0.1:9999 &lt;task id&gt;
-<span class="cm"># 어느 명령이든 -o json을 붙이면 규격의 JSON 그대로 나온다</span></pre></div>
+<span class="cm"># 어느 명령이든 -o json을 붙이면 규격의 JSON 그대로 나온다</span>
 
-    <div class="code"><span class="file">4단계: A2A-Version 헤더 없이 보내기</span><pre>curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/json'</span> -d <span class="st">'{
+<span class="cm"># 2번: A2A-Version 헤더 없이 보내기</span>
+curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/json'</span> -d <span class="st">'{
   "jsonrpc": "2.0", "id": 1, "method": "SendMessage",
   "params": {"message": {"role": "ROLE_USER", "messageId": "m0",
                          "parts": [{"text": "I want to buy a lamp"}]}}}'</span></pre></div>
 
-    <p>3~7단계를 한 번에 돌리는 <code class="inline">lab_cli.sh</code>의 참조 출력을 줄인 것이다.</p>
+    <p>STEP 5 전체를 한 번에 돌리는 <code class="inline">lab_cli.sh</code>의 참조 출력을 줄인 것이다.</p>
 
     <div class="code"><span class="file">lab/logs/lab-cli.txt</span><pre>$ curl (SendMessage without the A2A-Version header)
 {"error":{"code":-32009,"message":"A2A version '0.3' is not supported by this handler. Expected version '1.0'.", ...}}
@@ -1100,7 +1315,8 @@ Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
     <div class="check">
       <div class="lbl">CHECKPOINT</div>
       <ul>
-        <li><code class="inline">a2a card get</code> 출력의 Interfaces가 <code class="inline">JSONRPC http://127.0.0.1:9999/</code>다.</li>
+        <li>echo server에 보낸 &ldquo;hello A2A&rdquo;가 completed task의 artifact로 돌아온다.</li>
+        <li>hello 에이전트가 &ldquo;Hello! You said: hi there&rdquo;로 답하고, server 로그에 카드 GET과 POST가 차례로 찍힌다.</li>
         <li><code class="inline">A2A-Version</code> 헤더가 없는 curl 요청에 <code class="inline">-32009</code>가 온다.</li>
         <li>램프 거래가 input-required(asking 130), input-required(Counteroffer: 105), completed 순서로 가고, 영수증의 price가 105다.</li>
         <li>끝난 task에 보낸 메시지가 <code class="inline">UNSUPPORTED_OPERATION</code>과 exit code 1로 끝난다.</li>
