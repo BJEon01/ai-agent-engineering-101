@@ -284,11 +284,12 @@ footer .o{color:var(--muted)}
       <table>
         <tr><th>Part</th><th>Content</th></tr>
         <tr><td class="stage">A1</td><td>MCP and A2A: calling a tool, handing over a job</td></tr>
-        <tr><td class="stage">A2</td><td>Agent Card: finding an agent to hand the job to</td></tr>
-        <tr><td class="stage">A3</td><td>Task: the state and the results of a delegated job</td></tr>
-        <tr><td class="stage">A4</td><td>FIPA-ACL and A2A</td></tr>
+        <tr><td class="stage">A2</td><td>A2A today: v1.0, AAIF, the official CLI</td></tr>
+        <tr><td class="stage">A3</td><td>Agent Card: finding an agent to hand the job to</td></tr>
+        <tr><td class="stage">A4</td><td>Task: the state and the results of a delegated job</td></tr>
+        <tr><td class="stage">A5</td><td>FIPA-ACL and A2A</td></tr>
         <tr><td class="stage">Discussion</td><td>Who checks what an Agent Card claims?</td></tr>
-        <tr><td class="stage">LAB</td><td>Run a shop agent as an A2A server and trade with it over curl</td></tr>
+        <tr><td class="stage">LAB</td><td>Run a shop agent as an A2A server and trade with it using the a2a CLI</td></tr>
         <tr><td class="stage">HW</td><td>The inflated Agent Card experiment</td></tr>
       </table>
     </div>
@@ -300,7 +301,7 @@ footer .o{color:var(--muted)}
   <div class="part">
     <div class="lbl">PART A: LECTURE</div>
     <h2>Agent2Agent: a protocol for handing work to another agent</h2>
-    <div class="meta">A1 MCP and A2A, A2 Agent Card, A3 task lifecycle, A4 FIPA-ACL and A2A, discussion</div>
+    <div class="meta">A1 MCP and A2A, A2 A2A today, A3 Agent Card, A4 task lifecycle, A5 FIPA-ACL and A2A, discussion</div>
   </div>
 </div>
 
@@ -370,14 +371,123 @@ footer .o{color:var(--muted)}
 
     <div class="define">
       <p>A2A is a protocol for agents that cannot see inside each other to find one another (Agent Card), hand over work (task), and receive the results (artifact).</p>
-      <p class="sub">Google announced it on April 9, 2025 with more than 50 technology partners; it became a Linux Foundation project on June 23, 2025. The current version is v1.0 (v1.0.0 on March 12, 2026, v1.0.1 on May 28). The examples and the lab in these notes were checked against the v1.0 specification and the Python SDK a2a-sdk 1.2.2.</p>
+      <p class="sub">The examples and the lab in these notes were checked against the A2A v1.0 specification, the Python SDK a2a-sdk 1.2.2, and the official CLI a2a 0.3.0.</p>
     </div>
   </div>
 </section>
 
 <section>
   <div class="col">
-    <div class="secmark"><span class="no">A2</span><h2>Agent Card: finding an agent to hand the job to</h2></div>
+    <div class="secmark"><span class="no">A2</span><h2>A2A today: v1.0, AAIF, the official CLI</h2></div>
+    <p>Since Google announced A2A in April 2025, both its home and its specification version have changed several times (FIG. 02).</p>
+
+    <div class="fig" id="fig2">
+      <svg viewBox="0 0 680 262" role="img" aria-label="A2A timeline: announced by Google in April 2025, Linux Foundation project in June 2025, IBM's Agent Communication Protocol merged in August 2025, v1.0 in March 2026, joined the Agentic AI Foundation in August 2026, official CLI in September 2026">
+        <path d="M92 22 L92 236" stroke="#A8A29E" stroke-width="1"/>
+        <g fill="#FFFFFF" stroke="#1C1917" stroke-width="1.5">
+          <circle cx="92" cy="26" r="5"/><circle cx="92" cy="68" r="5"/><circle cx="92" cy="110" r="5"/>
+          <circle cx="92" cy="194" r="5"/><circle cx="92" cy="236" r="5"/>
+        </g>
+        <circle cx="92" cy="152" r="6" fill="#1C1917"/>
+        <g fill="#78716C" font-size="10" font-family="IBM Plex Mono, monospace">
+          <text x="0" y="30">2025-04</text><text x="0" y="72">2025-06</text><text x="0" y="114">2025-08</text>
+          <text x="0" y="156">2026-03</text><text x="0" y="198">2026-08</text><text x="0" y="240">2026-09</text>
+        </g>
+        <g fill="#1C1917" font-size="11.5" font-weight="600">
+          <text x="112" y="24">Google announces A2A</text>
+          <text x="112" y="66">becomes a Linux Foundation project</text>
+          <text x="112" y="108">IBM's Agent Communication Protocol merges into A2A</text>
+          <text x="112" y="150">v1.0, the first stable spec</text>
+          <text x="112" y="192">joins the Agentic AI Foundation (AAIF)</text>
+          <text x="112" y="234">official a2a CLI 0.3.0</text>
+        </g>
+        <g fill="#78716C" font-size="9.5">
+          <text x="112" y="39">more than 50 technology partners</text>
+          <text x="112" y="81">vendor-neutral governance</text>
+          <text x="112" y="123">not the Agent Client Protocol of week 08</text>
+          <text x="112" y="165">signed cards, multi-tenancy, version negotiation (A2A-Version)</text>
+          <text x="112" y="207">more than 150 organizations; MCP is an AAIF project too</text>
+          <text x="112" y="249">official SDKs in Python, Go, JavaScript, Java, .NET, Rust</text>
+        </g>
+      </svg>
+      <div class="cap"><span><b>FIG. 02</b> A2A, from announcement to AAIF</span><span>this note uses v1.0</span></div>
+    </div>
+
+    <p>In August 2025, IBM's Agent Communication Protocol merged into A2A. It shares only the acronym with the Agent Client Protocol of week 08.</p>
+
+    <p>v1.0, released in March 2026, is the first stable version. It added signed cards, multi-tenancy (several agents behind one address), and version negotiation through the <code class="inline">A2A-Version</code> header. Method names and the way state values are written also changed from v0.3, so v0.3 example code on the web does not work against a v1.0 server as is.</p>
+
+    <p>In August 2026, A2A became a project of the Agentic AI Foundation (AAIF) under the Linux Foundation. MCP from week 05 is an AAIF project too. AAIF describes its projects as layers: MCP connects an agent to tools, and A2A connects an agent to other agents (FIG. 03).</p>
+
+    <div class="fig" id="fig3">
+      <svg viewBox="0 0 680 246" role="img" aria-label="The layers AAIF assigns to its projects: AGENTS.md for instructions and context, goose for the agent runtime, MCP for agent to tool, agentgateway for traffic, A2A for agent to agent">
+        <g fill="#A8A29E" font-size="9.5" letter-spacing="1">
+          <text x="14" y="14">PROJECT</text><text x="170" y="14">LAYER</text><text x="530" y="14">IN THIS COURSE</text>
+        </g>
+        <g fill="#FFFFFF" stroke="#1C1917" stroke-width="1.5">
+          <rect x="0" y="24" width="680" height="38"/>
+          <rect x="0" y="68" width="680" height="38"/>
+          <rect x="0" y="112" width="680" height="38"/>
+          <rect x="0" y="156" width="680" height="38"/>
+        </g>
+        <rect x="0" y="200" width="680" height="38" fill="#FAFAF9" stroke="#1C1917" stroke-width="2.5"/>
+        <g fill="#1C1917" font-size="11.5" font-weight="600">
+          <text x="14" y="47">AGENTS.md</text>
+          <text x="14" y="91">goose</text>
+          <text x="14" y="135">MCP</text>
+          <text x="14" y="179">agentgateway</text>
+          <text x="14" y="223">A2A</text>
+        </g>
+        <g fill="#1C1917" font-size="10.5">
+          <text x="170" y="47">instructions and context for agents</text>
+          <text x="170" y="91">agent runtime: reasons, plans, calls capabilities</text>
+          <text x="170" y="135">agent to tool: tools, data sources, services</text>
+          <text x="170" y="179">traffic: routing, policy, observability</text>
+          <text x="170" y="223" font-weight="600">agent to agent: discover, delegate, exchange results</text>
+        </g>
+        <g fill="#78716C" font-size="10">
+          <text x="530" y="135">week 05</text>
+          <text x="530" y="223" fill="#1C1917" font-weight="600">week 06</text>
+        </g>
+      </svg>
+      <div class="cap"><span><b>FIG. 03</b> Where A2A sits in the AAIF stack</span><span>layers as AAIF describes them, aaif.io</span></div>
+    </div>
+
+    <p>According to AAIF, more than 150 organizations support A2A; at launch there were more than 50 technology partners. These are the uses the announcement lists.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Area</th><th>Example</th></tr>
+        <tr><td class="stage">Mobile OS</td><td>Huawei's HarmonyOS assistant Celia hands long-running tasks to agents inside apps and asks them for UI control and recommendations. WeChat uses this link for messages, voice calls, and video calls started by an AI assistant</td></tr>
+        <tr><td class="stage">Cloud</td><td>Google Cloud (ADK, Agent Engine, Cloud Run, GKE), Microsoft Azure AI Foundry, and AWS Bedrock AgentCore can host A2A servers and find other agents</td></tr>
+        <tr><td class="stage">Payments</td><td>The Agent Payments Protocol (AP2) from Google Cloud and PayPal. Shopping agents and merchant agents exchange products and prices over A2A, and AP2 handles payment authorization</td></tr>
+        <tr><td class="stage">Frameworks</td><td>LangGraph, CrewAI, Pydantic AI, AG2, IBM BeeAI</td></tr>
+      </table>
+    </div>
+
+    <p>These examples come from AAIF and the A2A project; these notes did not check how much each company actually uses A2A.</p>
+
+    <p>In October 2026 the project announced the official CLI, <code class="inline">a2a</code>. From a terminal it fetches cards, sends messages, and reads and cancels tasks. You do not have to write JSON-RPC requests by hand, so this week's lab uses it. The same repository has a skill that lets coding agents such as Claude Code, Cursor, and Codex hand work to remote A2A agents through the CLI.</p>
+
+    <p>The roadmap, last updated on September 15, 2026, lists these items.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Item</th><th>What it covers</th></tr>
+        <tr><td class="stage">v1.1</td><td>task timeline rules, event filtering, how to handle messages that arrive while a task is WORKING</td></tr>
+        <tr><td class="stage">BiDi streaming</td><td>keep exchanging messages while the agent is still working</td></tr>
+        <tr><td class="stage">CLI</td><td>let coding agents call A2A agents through the CLI</td></tr>
+        <tr><td class="stage">Negotiation and elicitation</td><td>structured input from people, and negotiation patterns over several rounds, drawn from telecom use cases</td></tr>
+      </table>
+    </div>
+
+    <p>The lab shop's bargaining rules (the opening price, the counteroffer, how many low offers before it walks away) are not in the specification; they live only in the shop's code.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="secmark"><span class="no">A3</span><h2>Agent Card: finding an agent to hand the job to</h2></div>
     <p>An A2A server MUST publish an Agent Card: a JSON document with the agent's name, description, the address that takes requests, the features it supports, and its skills. The default location is <code class="inline">https://{domain}/.well-known/agent-card.json</code>. This is the card of the shop agent you will run in the lab.</p>
 
     <div class="code"><span class="file">GET http://127.0.0.1:9999/.well-known/agent-card.json</span><pre>{
@@ -405,7 +515,7 @@ footer .o{color:var(--muted)}
 
     <p><code class="inline">skills</code> lists what the agent can do in words a person reads. Unlike a week-05 tool, a skill has no argument schema (JSON Schema). The client's model reads the description and the <code class="inline">examples</code> and decides what to send and how.</p>
 
-    <div class="fig" id="fig2">
+    <div class="fig" id="fig4">
       <svg viewBox="0 0 680 236" role="img" aria-label="Discovery sequence: the client fetches the agent card from the well-known path, picks the JSON-RPC interface, and sends SendMessage with the A2A-Version header">
         <defs>
           <marker id="f2-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -441,14 +551,14 @@ footer .o{color:var(--muted)}
         </g>
         <text x="124" y="141" fill="#78716C" font-size="9.5">reads the skills, picks the first interface it supports (JSONRPC)</text>
       </svg>
-      <div class="cap"><span><b>FIG. 02</b> Discovery, then the first message</span><span>the card is a plain HTTP GET</span></div>
+      <div class="cap"><span><b>FIG. 04</b> Discovery, then the first message</span><span>the card is a plain HTTP GET</span></div>
     </div>
 
     <p>Besides the well-known URI, a client can look a card up in a registry that collects cards, or use a card address configured in advance.</p>
 
-    <p>In FIPA, the Directory Facilitator (DF) of an agent platform did this job. Agents registered their services with the DF, and other agents searched the DF by service type (yellow pages). In A2A each agent puts its card on its own domain, and a registry is used when needed (FIG. 03).</p>
+    <p>In FIPA, the Directory Facilitator (DF) of an agent platform did this job. Agents registered their services with the DF, and other agents searched the DF by service type (yellow pages). In A2A each agent puts its card on its own domain, and a registry is used when needed (FIG. 05).</p>
 
-    <div class="fig" id="fig3">
+    <div class="fig" id="fig5">
       <svg viewBox="0 0 680 248" role="img" aria-label="FIPA: agents register with one Directory Facilitator and buyers search it. A2A: each agent serves its own card; the buyer fetches cards directly, a registry is optional">
         <defs>
           <marker id="f3-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -498,7 +608,7 @@ footer .o{color:var(--muted)}
           <text x="370" y="240">the buyer fetches each card from its agent</text>
         </g>
       </svg>
-      <div class="cap"><span><b>FIG. 03</b> Directory Facilitator and Agent Card</span><span>the directory became optional</span></div>
+      <div class="cap"><span><b>FIG. 05</b> Directory Facilitator and Agent Card</span><span>the directory became optional</span></div>
     </div>
 
     <p>Whoever builds the agent writes its card. So it was with the week-03 Contract Net bid and the week-05 tool description. In v1.0 a card can carry a JWS signature, so a client can check who published it and that it was not altered on the way. Nothing in the specification checks whether the sentences in a card are true. The assignment changes one card's sentences and measures the effect.</p>
@@ -507,35 +617,22 @@ footer .o{color:var(--muted)}
 
 <section>
   <div class="col">
-    <div class="secmark"><span class="no">A3</span><h2>Task: the state and the results of a delegated job</h2></div>
-    <p>The client sends a message with <code class="inline">SendMessage</code>. If the server can answer right away, it replies with a single message; if the job takes time or needs back-and-forth, it creates a task and returns that. Send the lab shop &ldquo;I want to buy a lamp&rdquo; and this comes back.</p>
+    <div class="secmark"><span class="no">A4</span><h2>Task: the state and the results of a delegated job</h2></div>
+    <p>The client sends a message with <code class="inline">SendMessage</code>. If the server can answer right away, it replies with a single message; if the job takes time or needs back-and-forth, it creates a task and returns that. Send the lab shop &ldquo;I want to buy a lamp&rdquo; with the a2a CLI and a task comes back.</p>
 
-    <div class="code"><span class="file">SendMessage response (lab/logs/lab-first-response.json)</span><pre>{
-  <span class="st">"result"</span>: {
-    <span class="st">"task"</span>: {
-      <span class="st">"id"</span>: <span class="st">"d26f7b6c-2b2a-42ab-af06-9830cf278db5"</span>,
-      <span class="st">"contextId"</span>: <span class="st">"0132caae-a7e3-409b-a0ea-4dbd35bfc5a3"</span>,
-      <span class="st">"status"</span>: {
-        <span class="st">"state"</span>: <span class="st">"TASK_STATE_INPUT_REQUIRED"</span>,
-        <span class="st">"message"</span>: {
-          <span class="st">"role"</span>: <span class="st">"ROLE_AGENT"</span>,
-          <span class="st">"parts"</span>: [{ <span class="st">"text"</span>: <span class="st">"lamp: asking 130. Send your offer as a number."</span> }],
-          ...
-        },
-        <span class="st">"timestamp"</span>: <span class="st">"2026-10-11T10:47:11.822276Z"</span>
-      },
-      <span class="st">"history"</span>: [
-        { <span class="st">"messageId"</span>: <span class="st">"m1"</span>, <span class="st">"role"</span>: <span class="st">"ROLE_USER"</span>, <span class="st">"parts"</span>: [{ <span class="st">"text"</span>: <span class="st">"I want to buy a lamp"</span> }], ... }
-      ]
-    }
-  },
-  <span class="st">"id"</span>: 2,
-  <span class="st">"jsonrpc"</span>: <span class="st">"2.0"</span>
-}</pre></div>
+    <div class="code"><span class="file">lab/logs/lab-cli.txt</span><pre>$ a2a send -a http://127.0.0.1:9999 <span class="st">"I want to buy a lamp"</span>
+Task:     a7b1e3f3-9530-4eb2-b84c-cac830752ff3
+Context:  8718ea6a-4c6d-4ccc-a416-57ff708de2f2
+Status:   input-required (2026-10-13T05:21:00Z)
+  lamp: asking 130. Send your offer as a number.
+History:
+  [user] I want to buy a lamp
 
-    <p><code class="inline">id</code> is the task number the server made; every later message about this job carries it as <code class="inline">taskId</code>. <code class="inline">contextId</code> groups related tasks and messages into one conversation. <code class="inline">status</code> holds the current state and what the shop said, <code class="inline">history</code> the messages so far. When the job is done, its results are attached as <code class="inline">artifacts</code> (FIG. 04).</p>
+Resume:     a2a send --task-id a7b1e3f3-9530-4eb2-b84c-cac830752ff3 <span class="st">"&lt;reply&gt;"</span></pre></div>
 
-    <div class="fig" id="fig4">
+    <p><code class="inline">Task</code> is the task number the server made; every later message about this job carries it. In the CLI you pass it with <code class="inline">--task-id</code>, and the last line, <code class="inline">Resume</code>, shows that command. <code class="inline">Context</code> groups related tasks and messages into one conversation. <code class="inline">Status</code> holds the current state and what the shop said, <code class="inline">History</code> the messages so far. When the job is done, its results are attached under <code class="inline">Artifacts</code>. Add <code class="inline">-o json</code> and the same content comes out with the specification's field names (<code class="inline">id</code>, <code class="inline">contextId</code>, <code class="inline">status</code>, <code class="inline">history</code>, <code class="inline">artifacts</code>) (FIG. 06).</p>
+
+    <div class="fig" id="fig6">
       <svg viewBox="0 0 680 270" role="img" aria-label="Task anatomy: a task has id, contextId, status, history of messages, and artifacts; messages and artifacts are made of parts; a part holds text, raw bytes, a url, or JSON data">
         <defs>
           <marker id="f4-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -583,12 +680,12 @@ footer .o{color:var(--muted)}
           <text x="404" y="249">one of text, raw, url, data; plus mediaType</text>
         </g>
       </svg>
-      <div class="cap"><span><b>FIG. 04</b> What a task carries</span><span>talk goes in messages, results go in artifacts</span></div>
+      <div class="cap"><span><b>FIG. 06</b> What a task carries</span><span>talk goes in messages, results go in artifacts</span></div>
     </div>
 
     <p>What the shop says (&ldquo;80 is too low&rdquo;) arrives as the status message; the outcome of the deal arrives as an artifact. The specification says results SHOULD be returned as artifacts, not in messages. Messages and artifacts are both made of Parts. A Part holds one of text, raw (file bytes), url (a file address), or data (a JSON value), and <code class="inline">mediaType</code> names the format. The lab shop's receipt is a data Part, so the receiving code reads <code class="inline">price</code> directly.</p>
 
-    <p>Up to v0.3 the task state values were written in lower case with hyphens, such as <code class="inline">input-required</code>; v1.0 changed them to the <code class="inline">TASK_STATE_INPUT_REQUIRED</code> form. Example code on the web that uses lower-case values targets v0.3.</p>
+    <p>In JSON a task state value looks like <code class="inline">TASK_STATE_INPUT_REQUIRED</code>. The CLI shows it shortened, as <code class="inline">input-required</code>. That lower-case form was the actual value in the specification up to v0.3, so example code on the web that compares lower-case values in JSON targets v0.3.</p>
 
     <div class="tbl-wrap">
       <table>
@@ -606,7 +703,7 @@ footer .o{color:var(--muted)}
 
     <p>An interrupted task continues when the client sends a message with the same <code class="inline">taskId</code>. A terminal task takes no more messages; the server answers one with an error.</p>
 
-    <div class="fig" id="fig5">
+    <div class="fig" id="fig7">
       <svg viewBox="0 0 680 304" role="img" aria-label="Task state machine: submitted to working; working to input-required or auth-required and back when the client answers; working to the terminal states completed, failed, canceled, rejected">
         <defs>
           <marker id="f5-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -669,12 +766,12 @@ footer .o{color:var(--muted)}
         <text x="0" y="282" fill="#78716C" font-size="9.5">values are TASK_STATE_* in v1.0; double border = terminal, no further messages</text>
         <text x="0" y="297" fill="#78716C" font-size="9.5">a server may skip WORKING: the lab shop goes from a new task straight to INPUT_REQUIRED or REJECTED</text>
       </svg>
-      <div class="cap"><span><b>FIG. 05</b> Task lifecycle, A2A v1.0</span><span>interrupted states wait for the client</span></div>
+      <div class="cap"><span><b>FIG. 07</b> Task lifecycle, A2A v1.0</span><span>interrupted states wait for the client</span></div>
     </div>
 
-    <p>FIG. 06 draws the lab purchase as state changes. The shop named a price and stopped to wait for input (INPUT_REQUIRED); when the buyer sent 80 with the same <code class="inline">taskId</code>, it countered at 105. When the buyer sent 105, it closed the deal (COMPLETED) and attached a receipt artifact. Sending 110 to the finished task returned <code class="inline">-32004</code> (UnsupportedOperationError).</p>
+    <p>FIG. 08 draws the lab purchase as state changes. The shop named a price and stopped to wait for input (INPUT_REQUIRED); when the buyer sent 80 with the same <code class="inline">taskId</code>, it countered at 105. When the buyer sent 105, it closed the deal (COMPLETED) and attached a receipt artifact. Sending 110 to the finished task returned UnsupportedOperationError: JSON-RPC error code <code class="inline">-32004</code>, shown by the CLI as <code class="inline">UNSUPPORTED_OPERATION</code>.</p>
 
-    <div class="fig" id="fig6">
+    <div class="fig" id="fig8">
       <svg viewBox="0 0 680 330" role="img" aria-label="Lab run: the buyer asks for a lamp, the shop asks 130, the buyer offers 80, the shop counters 105, the buyer sends 105, the task completes with a receipt artifact; a later message to the completed task gets error -32004">
         <defs>
           <marker id="f6-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -685,7 +782,7 @@ footer .o{color:var(--muted)}
           <rect x="510" y="6" width="160" height="30"/>
         </g>
         <g text-anchor="middle" fill="#1C1917" font-size="11.5" font-weight="600">
-          <text x="90" y="25">buyer (curl)</text>
+          <text x="90" y="25">buyer (a2a CLI)</text>
           <text x="590" y="25">Lamp Shop</text>
         </g>
         <g stroke="#A8A29E" stroke-width="1" stroke-dasharray="3 4">
@@ -705,24 +802,24 @@ footer .o{color:var(--muted)}
         </g>
         <g fill="#1C1917" font-size="10">
           <text x="104" y="60">SendMessage  "I want to buy a lamp"</text>
-          <text x="104" y="124">SendMessage  taskId=d26f7b6c...  "80"</text>
-          <text x="104" y="188">SendMessage  taskId=d26f7b6c...  "105"</text>
-          <text x="104" y="276">SendMessage  taskId=d26f7b6c...  "110"</text>
+          <text x="104" y="124">SendMessage  taskId=a7b1e3f3...  "80"</text>
+          <text x="104" y="188">SendMessage  taskId=a7b1e3f3...  "105"</text>
+          <text x="104" y="276">SendMessage  taskId=a7b1e3f3...  "110"</text>
         </g>
         <g fill="#1C1917" font-size="10">
           <text x="104" y="90"><tspan font-weight="600">INPUT_REQUIRED</tspan>  "lamp: asking 130. Send your offer as a number."</text>
           <text x="104" y="154"><tspan font-weight="600">INPUT_REQUIRED</tspan>  "80 is too low. Counteroffer: 105."</text>
           <text x="104" y="218"><tspan font-weight="600">COMPLETED</tspan>  "Deal: lamp at 105."</text>
-          <text x="104" y="306"><tspan font-weight="600">error -32004</tspan>  task is in terminal state: COMPLETED</text>
+          <text x="104" y="306"><tspan font-weight="600">UNSUPPORTED_OPERATION (-32004)</tspan>  task is in terminal state</text>
         </g>
-        <text x="104" y="242" fill="#78716C" font-size="9.5">artifact "receipt": {"seller": "Lamp Shop", "item": "lamp", "price": 105.0}</text>
+        <text x="104" y="242" fill="#78716C" font-size="9.5">artifact "receipt": {"item": "lamp", "price": 105, "seller": "Lamp Shop"}</text>
       </svg>
-      <div class="cap"><span><b>FIG. 06</b> One purchase, one task</span><span>lab/logs/lab-run.txt, steps 3 to 7</span></div>
+      <div class="cap"><span><b>FIG. 08</b> One purchase, one task</span><span>lab/logs/lab-cli.txt</span></div>
     </div>
 
     <p>When a task runs long, the client chooses how to wait for the result. It can ask again with <code class="inline">GetTask</code> (polling), or keep a connection open with <code class="inline">SendStreamingMessage</code> and receive state changes as Server-Sent Events. If the client registers a webhook address, the server sends a notification there whenever the state changes (push notification). The server states in the Agent Card's <code class="inline">capabilities</code> whether it supports streaming and push notifications.</p>
 
-    <div class="fig" id="fig7">
+    <div class="fig" id="fig9">
       <svg viewBox="0 0 680 236" role="img" aria-label="Three ways to follow a long task: polling with GetTask, streaming over Server-Sent Events, and push notifications to a client webhook">
         <defs>
           <marker id="f7-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -771,14 +868,14 @@ footer .o{color:var(--muted)}
           <text x="272" y="226">POST to the webhook when the task changes</text>
         </g>
       </svg>
-      <div class="cap"><span><b>FIG. 07</b> Following a long task</span><span>capabilities.streaming, capabilities.pushNotifications</span></div>
+      <div class="cap"><span><b>FIG. 09</b> Following a long task</span><span>capabilities.streaming, capabilities.pushNotifications</span></div>
     </div>
   </div>
 </section>
 
 <section>
   <div class="col">
-    <div class="secmark"><span class="no">A4</span><h2>FIPA-ACL and A2A</h2></div>
+    <div class="secmark"><span class="no">A5</span><h2>FIPA-ACL and A2A</h2></div>
     <p>Each field of a week-04 FIPA-ACL message, mapped onto A2A v1.0.</p>
 
     <div class="tbl-wrap">
@@ -796,9 +893,9 @@ footer .o{color:var(--muted)}
       </table>
     </div>
 
-    <p>FIG. 08 writes the same lamp purchase in both formats. In FIPA-ACL every message carries an act name. In A2A the buyer's &ldquo;105&rdquo; is plain text, and the shop agent decides whether to read it as acceptance. How far the deal has got is given by the task state: INPUT_REQUIRED while countering, COMPLETED once the deal closes.</p>
+    <p>FIG. 10 writes the same lamp purchase in both formats. In FIPA-ACL every message carries an act name. In A2A the buyer's &ldquo;105&rdquo; is plain text, and the shop agent decides whether to read it as acceptance. How far the deal has got is given by the task state: INPUT_REQUIRED while countering, COMPLETED once the deal closes.</p>
 
-    <div class="fig" id="fig8">
+    <div class="fig" id="fig10">
       <svg viewBox="0 0 680 290" role="img" aria-label="The same lamp purchase written as FIPA-ACL messages with act names and as A2A SendMessage calls with task states">
         <defs>
           <marker id="f8-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -839,7 +936,7 @@ footer .o{color:var(--muted)}
           <text x="360" y="270">the act name is gone; the task state tracks the deal</text>
         </g>
       </svg>
-      <div class="cap"><span><b>FIG. 08</b> One deal, two protocols</span><span>bold = what says how far the deal got</span></div>
+      <div class="cap"><span><b>FIG. 10</b> One deal, two protocols</span><span>bold = what says how far the deal got</span></div>
     </div>
 
     <p>The limits of FIPA-ACL from week 04, side by side with A2A.</p>
@@ -850,7 +947,7 @@ footer .o{color:var(--muted)}
         <tr><td class="stage">Verifying semantics</td><td>Defined a message's meaning by the sender's beliefs and intentions. There was no way to check those beliefs from outside</td><td>Defines no meaning for messages. Nothing checks what an Agent Card claims either. A card signature vouches only for who published it</td></tr>
         <tr><td class="stage">Reasoning</td><td>Implementations stopped at branching on the performative name</td><td>The models on both sides read natural-language messages and decide the next step</td></tr>
         <tr><td class="stage">Ontology agreement</td><td><code class="inline">:language</code> and <code class="inline">:ontology</code> had to be agreed in advance</td><td>Only a mediaType is stated; a model reads the content</td></tr>
-        <tr><td class="stage">Adoption</td><td>Came out before there were agents to use it</td><td>More than 50 technology partners at launch. npm downloads are 5.5% of the MCP SDK's (below)</td></tr>
+        <tr><td class="stage">Adoption</td><td>Came out before there were agents to use it</td><td>Supported by more than 150 organizations and the major clouds. npm downloads are 5.5% of the MCP SDK's (below)</td></tr>
       </table>
     </div>
 
@@ -882,23 +979,23 @@ footer .o{color:var(--muted)}
   <div class="part">
     <div class="lbl">PART B: LAB</div>
     <h2>Run a shop agent as an A2A server</h2>
-    <div class="meta">GOAL: run a rule-based seller as an A2A server, take one purchase from a message to COMPLETED with curl, and reach REJECTED and CANCELED once each</div>
+    <div class="meta">GOAL: run a rule-based seller as an A2A server, take one purchase to COMPLETED with the a2a CLI, and reach REJECTED and CANCELED once each</div>
   </div>
 </div>
 
 <section>
   <div class="col">
-    <div class="secmark"><span class="no">LAB</span><h2>Start Lamp Shop and trade with it over curl</h2></div>
-    <p>Start a shop agent that names prices by rule, with no model, using a2a-sdk; fetch its card with curl and buy a lamp. No model is called, so no API key is needed. The shop opens at 1.3 times its reserve (the lowest price it accepts) and closes the deal at any offer at or above the reserve. It counters a low offer and turns the deal down on the third low offer.</p>
+    <div class="secmark"><span class="no">LAB</span><h2>Start Lamp Shop and trade with it using the a2a CLI</h2></div>
+    <p>Start a shop agent that names prices by rule, with no model, using a2a-sdk; fetch its card with the official CLI and buy a lamp. No model is called, so no API key is needed. The shop opens at 1.3 times its reserve (the lowest price it accepts) and closes the deal when an offer reaches the reserve. A lower offer gets a counteroffer, and after three low offers the shop rejects the deal.</p>
 
     <ol class="pre">
-      <li><b class="lead">Install the SDK.</b> <code class="inline">pip install "a2a-sdk[http-server]" uvicorn</code>. The reference run used a2a-sdk 1.2.2 on Python 3.12. An SDK in another language is fine.</li>
-      <li><b class="lead">Write the server.</b> <code class="inline">seller_agent.py</code>. The <code class="inline">execute</code> method of an <code class="inline">AgentExecutor</code> runs once per incoming message and changes the task state through a <code class="inline">TaskUpdater</code>. The SDK's route functions serve the card and the JSON-RPC endpoint.</li>
-      <li><b class="lead">Start it and fetch the card.</b> <code class="inline">python seller_agent.py</code> serves on <code class="inline">http://127.0.0.1:9999</code>; fetch <code class="inline">/.well-known/agent-card.json</code> with curl.</li>
-      <li><b class="lead">Send without the header.</b> Send <code class="inline">SendMessage</code> without the <code class="inline">A2A-Version</code> header. The specification says a server must read a request without the header as version 0.3, and the lab server, which takes 1.0 only, refuses it with <code class="inline">-32009</code> (VersionNotSupportedError).</li>
-      <li><b class="lead">Buy a lamp.</b> With the header, send &ldquo;I want to buy a lamp&rdquo;, then send 80 and 105 in turn with the returned task <code class="inline">id</code> as <code class="inline">taskId</code>. After COMPLETED and the receipt artifact arrive, a <code class="inline">GetTask</code> shows 5 messages in the history.</li>
-      <li><b class="lead">Send to the finished task.</b> Send 110 with the same <code class="inline">taskId</code> and get <code class="inline">-32004</code>.</li>
-      <li><b class="lead">Reach the other terminal states.</b> Asking for a sofa, which the shop does not sell, ends in REJECTED; offering 100 three times for a chair ends in REJECTED; <code class="inline">CancelTask</code> on an open bookshelf task ends in CANCELED.</li>
+      <li><b class="lead">Install.</b> Install the server side with <code class="inline">pip install "a2a-sdk[http-server]" uvicorn</code>. Install the CLI on macOS and Linux with <code class="inline">brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli</code> and then <code class="inline">brew install a2a</code>, or on Windows with <code class="inline">winget install a2aproject.a2acli</code>. <code class="inline">go install github.com/a2aproject/a2a-cli@latest</code> names the binary <code class="inline">a2a-cli</code>; rename it to <code class="inline">a2a</code>. The reference run used a2a-sdk 1.2.2, Python 3.12, and a2a 0.3.0. An SDK in another language is fine.</li>
+      <li><b class="lead">Write the server.</b> <code class="inline">seller_agent.py</code>. The <code class="inline">execute</code> method of an <code class="inline">AgentExecutor</code> runs once per incoming message and changes the task state through a <code class="inline">TaskUpdater</code>. The SDK's route functions build the card and JSON-RPC routes.</li>
+      <li><b class="lead">Start it and fetch the card.</b> <code class="inline">python seller_agent.py</code> serves on <code class="inline">http://127.0.0.1:9999</code>. In another terminal run <code class="inline">a2a card get http://127.0.0.1:9999</code>. The CLI reads <code class="inline">/.well-known/agent-card.json</code> and shows the name, the address, and the skills.</li>
+      <li><b class="lead">Send without the header.</b> The CLI adds the <code class="inline">A2A-Version</code> header for you, so send one request without it using the curl command below. The specification says a server must read a request without the header as version 0.3, and the lab server, which accepts only 1.0, rejects it with <code class="inline">-32009</code> (VersionNotSupportedError).</li>
+      <li><b class="lead">Buy the lamp.</b> Send <code class="inline">a2a send -a http://127.0.0.1:9999 "I want to buy a lamp"</code>. Following the <code class="inline">Resume</code> line at the end of the output, add <code class="inline">--task-id</code> and send 80, then 105. Once completed and the receipt artifact come back, run <code class="inline">a2a task get</code>: History holds 5 messages.</li>
+      <li><b class="lead">Send to the finished task.</b> Send 110 with the same <code class="inline">--task-id</code>; the CLI reports <code class="inline">UNSUPPORTED_OPERATION</code> and exits with code 1.</li>
+      <li><b class="lead">Reach the other terminal states.</b> Asking for a sofa, which the shop does not sell, ends rejected; offering 100 for a chair three times ends rejected; <code class="inline">a2a task cancel</code> on an open bookshelf task ends canceled.</li>
     </ol>
 
     <div class="code"><span class="file">seller_agent.py (the core)</span><pre><span class="kw">class</span> Seller(AgentExecutor):
@@ -940,54 +1037,76 @@ card = AgentCard(name=<span class="st">"Lamp Shop"</span>, ..., supported_interf
 handler = DefaultRequestHandler(agent_executor=Seller(cfg), task_store=InMemoryTaskStore(), agent_card=card)
 app = Starlette(routes=create_agent_card_routes(card) + create_jsonrpc_routes(handler, <span class="st">"/"</span>))</pre></div>
 
-    <div class="code"><span class="file">sending messages with curl</span><pre><span class="cm"># first message</span>
-curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/json'</span> -H <span class="st">'A2A-Version: 1.0'</span> -d <span class="st">'{
+    <div class="code"><span class="file">a2a CLI commands</span><pre><span class="cm"># fetch the card</span>
+a2a card get http://127.0.0.1:9999
+<span class="cm"># first message: a new task is created</span>
+a2a send -a http://127.0.0.1:9999 <span class="st">"I want to buy a lamp"</span>
+<span class="cm"># continue the same task</span>
+a2a send -a http://127.0.0.1:9999 --task-id &lt;task id&gt; 80
+<span class="cm"># read and cancel</span>
+a2a task get    -a http://127.0.0.1:9999 &lt;task id&gt;
+a2a task cancel -a http://127.0.0.1:9999 &lt;task id&gt;
+<span class="cm"># add -o json to any command to see the specification's JSON</span></pre></div>
+
+    <div class="code"><span class="file">Step 4: send without the A2A-Version header</span><pre>curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/json'</span> -d <span class="st">'{
   "jsonrpc": "2.0", "id": 1, "method": "SendMessage",
-  "params": {"message": {"role": "ROLE_USER", "messageId": "m1",
-                         "parts": [{"text": "I want to buy a lamp"}]}}}'</span>
-<span class="cm"># continue the same task: put taskId in the message</span>
-  ... <span class="st">"message": {"role": "ROLE_USER", "messageId": "m2", "taskId": "&lt;task id&gt;", "parts": [{"text": "80"}]}</span>
-<span class="cm"># check the state, cancel</span>
-  ... <span class="st">"method": "GetTask",    "params": {"id": "&lt;task id&gt;"}</span>
-  ... <span class="st">"method": "CancelTask", "params": {"id": "&lt;task id&gt;"}</span></pre></div>
+  "params": {"message": {"role": "ROLE_USER", "messageId": "m0",
+                         "parts": [{"text": "I want to buy a lamp"}]}}}'</span></pre></div>
 
-    <p>Reference output of <code class="inline">lab_run.sh</code>, which runs steps 3 to 7 in one go.</p>
+    <p>A shortened reference output of <code class="inline">lab_cli.sh</code>, which runs steps 3 to 7 in one go.</p>
 
-    <div class="code"><span class="file">lab/logs/lab-run.txt</span><pre>## 2. SendMessage without A2A-Version header
-  error -32009 A2A version '0.3' is not supported by this handler. Expected version '1.0'.
-## 3. SendMessage: I want to buy a lamp
-  state TASK_STATE_INPUT_REQUIRED | lamp: asking 130. Send your offer as a number.
-  taskId d26f7b6c-2b2a-42ab-af06-9830cf278db5
-## 4. SendMessage (same taskId): 80
-  state TASK_STATE_INPUT_REQUIRED | 80 is too low. Counteroffer: 105.
-## 5. SendMessage (same taskId): 105
-  state TASK_STATE_COMPLETED | Deal: lamp at 105.
-  artifact receipt [{"price": 105.0, "seller": "Lamp Shop", "item": "lamp"}]
-## 6. GetTask
-  state TASK_STATE_COMPLETED | history 5 messages | artifacts 1
-## 7. SendMessage to the completed task: 110
-  error -32004 Task d26f7b6c-2b2a-42ab-af06-9830cf278db5 is in terminal state: TASK_STATE_COMPLETED
-## 8. SendMessage: I want to buy a sofa
-  state TASK_STATE_REJECTED | We only sell: lamp, chair, bookshelf.
-## 9. Three low offers on a chair
-  state TASK_STATE_INPUT_REQUIRED | chair: asking 234. Send your offer as a number.
-  state TASK_STATE_INPUT_REQUIRED | 100 is too low. Counteroffer: 180.
-  state TASK_STATE_INPUT_REQUIRED | 100 is too low. Counteroffer: 180.
-  state TASK_STATE_REJECTED | No deal at 100.
-## 10. CancelTask on an open bookshelf task
-  state TASK_STATE_INPUT_REQUIRED | bookshelf: asking 338. Send your offer as a number.
-  state TASK_STATE_CANCELED |</pre></div>
+    <div class="code"><span class="file">lab/logs/lab-cli.txt</span><pre>$ curl (SendMessage without the A2A-Version header)
+{"error":{"code":-32009,"message":"A2A version '0.3' is not supported by this handler. Expected version '1.0'.", ...}}
 
-    <p>The receipt's price arrives as <code class="inline">105.0</code>. Inside the SDK, a JSON number in a data Part passes through a protobuf <code class="inline">Value</code> and becomes a float. Convert it to an integer on the receiving side.</p>
+$ a2a send -a http://127.0.0.1:9999 --task-id &lt;task&gt; 80
+Status:   input-required (2026-10-13T05:21:00Z)
+  80 is too low. Counteroffer: 105.
+
+$ a2a send -a http://127.0.0.1:9999 --task-id &lt;task&gt; 105
+Task:     a7b1e3f3-9530-4eb2-b84c-cac830752ff3
+Context:  8718ea6a-4c6d-4ccc-a416-57ff708de2f2
+Status:   completed (2026-10-13T05:21:00Z)
+  Deal: lamp at 105.
+Artifacts:
+  [receipt] {"item":"lamp","price":105,"seller":"Lamp Shop"}
+History:
+  [user] I want to buy a lamp
+  [agent] lamp: asking 130. Send your offer as a number.
+  [user] 80
+  [agent] 80 is too low. Counteroffer: 105.
+  [user] 105
+
+$ a2a send -a http://127.0.0.1:9999 --task-id &lt;task&gt; 110 -o json
+{
+  "error": {
+    "code": "A2ACLI_ERR_PROTOCOL",
+    "message": "failed to send message: Task a7b1e3f3-... is in terminal state: TASK_STATE_COMPLETED",
+    "a2aCode": "UNSUPPORTED_OPERATION"
+  }
+}
+exit code 1
+
+$ a2a send -a http://127.0.0.1:9999 "I want to buy a sofa"
+Status:   rejected (2026-10-13T05:21:01Z)
+  We only sell: lamp, chair, bookshelf.
+
+$ a2a send ... "I want to buy a chair", then 100 three times
+  100 is too low. Counteroffer: 180.
+  100 is too low. Counteroffer: 180.
+Status:   rejected (2026-10-13T05:21:01Z)
+  No deal at 100.
+
+$ a2a send ... "I want to buy a bookshelf", then a2a task cancel
+Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
 
     <div class="check">
       <div class="lbl">CHECKPOINT</div>
       <ul>
-        <li>The card's <code class="inline">supportedInterfaces[0].protocolBinding</code> is <code class="inline">JSONRPC</code>.</li>
-        <li>A request without the <code class="inline">A2A-Version</code> header gets <code class="inline">-32009</code>.</li>
-        <li>The lamp purchase goes INPUT_REQUIRED (asking 130), INPUT_REQUIRED (Counteroffer: 105), COMPLETED, and the receipt's price is 105.</li>
-        <li>A message to the finished task gets <code class="inline">-32004</code>.</li>
-        <li>The sofa and the three low offers end in REJECTED; <code class="inline">CancelTask</code> ends in CANCELED.</li>
+        <li>The Interfaces line of <code class="inline">a2a card get</code> reads <code class="inline">JSONRPC http://127.0.0.1:9999/</code>.</li>
+        <li>The curl request without the <code class="inline">A2A-Version</code> header gets <code class="inline">-32009</code>.</li>
+        <li>The lamp deal goes input-required (asking 130), input-required (Counteroffer: 105), completed, and the receipt price is 105.</li>
+        <li>A message to the finished task ends with <code class="inline">UNSUPPORTED_OPERATION</code> and exit code 1.</li>
+        <li>The sofa and the three low offers end rejected; <code class="inline">a2a task cancel</code> ends canceled.</li>
       </ul>
     </div>
   </div>
@@ -1009,7 +1128,7 @@ curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/js
       </table>
     </div>
 
-    <div class="fig" id="fig9">
+    <div class="fig" id="fig11">
       <svg viewBox="0 0 680 262" role="img" aria-label="Experiment: the buyer reads both shops' Agent Cards, picks one, and negotiates with it over A2A; only the South Shop card text changes between conditions">
         <defs>
           <marker id="f9-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
@@ -1057,7 +1176,7 @@ curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/js
           <text x="84" y="238">2. SendMessage, then the same taskId while INPUT_REQUIRED, at most 6 offers</text>
         </g>
       </svg>
-      <div class="cap"><span><b>FIG. 09</b> The experiment</span><span>each card is served at /.well-known/agent-card.json</span></div>
+      <div class="cap"><span><b>FIG. 11</b> The experiment</span><span>each card is served at /.well-known/agent-card.json</span></div>
     </div>
 
     <div class="tbl-wrap">
@@ -1081,7 +1200,7 @@ curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/js
       </table>
     </div>
 
-    <div class="fig" id="fig10">
+    <div class="fig" id="fig12">
       <svg viewBox="0 0 680 232" role="img" aria-label="Reference run, 12 episodes per condition: South picked 0 vs 11, deals 10 vs 2, rejected or abandoned 2 vs 10">
         <g fill="#A8A29E" font-size="9.5" letter-spacing="1">
           <text x="0" y="16">EPISODES OUT OF 12</text>
@@ -1117,7 +1236,7 @@ curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/js
         </g>
         <text x="0" y="228" fill="#78716C" font-size="9.5">s3 (lamp, budget 140): North sold at 100 three times; South sold at 125 twice and rejected once</text>
       </svg>
-      <div class="cap"><span><b>FIG. 10</b> Two card sentences, 24 episodes</span><span>reference run, results.csv</span></div>
+      <div class="cap"><span><b>FIG. 12</b> Two card sentences, 24 episodes</span><span>reference run, results.csv</span></div>
     </div>
 
     <p>All 11 reasons for picking South in the inflated condition contain &ldquo;almost any reasonable offer&rdquo;. In 7 of them the buyer wrote that the &ldquo;lowest prices&rdquo; claim was unverified and picked South anyway.</p>
@@ -1126,9 +1245,9 @@ curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/js
         reasonable offer (its example is 90), which gives the best chance of paying well under the 115
         limit, though its 'lowest prices' claim is unverified marketing."}</pre></div>
 
-    <p>The buyer's loss came from the way it bid as well as from the higher reserve. In s4 South could have sold at 325, inside the 340 budget, and kept countering at 325. The buyer raised its offer in small steps and was turned down on its fifth low offer, all three times (FIG. 11). No card mentions the rule that five low offers end the deal. The two plain-condition rejections in s2 were the same case: the buyer went up to 178 and 179, and North's reserve was 180.</p>
+    <p>The buyer's loss came from the way it bid as well as from the higher reserve. In s4 South could have sold at 325, inside the 340 budget, and kept countering at 325. The buyer raised its offer in small steps and was turned down on its fifth low offer, all three times (FIG. 13). No card mentions the rule that five low offers end the deal. The two plain-condition rejections in s2 were the same case: the buyer went up to 178 and 179, and North's reserve was 180.</p>
 
-    <div class="fig" id="fig11">
+    <div class="fig" id="fig13">
       <svg viewBox="0 0 680 248" role="img" aria-label="Inflated s4, run 2: the buyer offers 260, 300, 305, 315, 320 while South counters 341 then 325 four times; the budget is 340; the fifth low offer is rejected">
         <g stroke="#E7E5E4" stroke-width="1">
           <path d="M80 184 L620 184"/><path d="M80 120 L620 120"/><path d="M80 56 L620 56"/>
@@ -1161,7 +1280,7 @@ curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/js
           <rect x="200" y="236" width="8" height="8" fill="#FFFFFF" stroke="#78716C" stroke-width="1.5"/><text x="214" y="243" fill="#78716C">South's counteroffer (its reserve is 325)</text>
         </g>
       </svg>
-      <div class="cap"><span><b>FIG. 11</b> Inflated s4, run 2: a deal at 325 was open</span><span>logs/inflated-02.txt</span></div>
+      <div class="cap"><span><b>FIG. 13</b> Inflated s4, run 2: a deal at 325 was open</span><span>logs/inflated-02.txt</span></div>
     </div>
 
     <p>In the plain condition the buyer picked North all 12 times. The reason was that the two cards were identical so it simply picked one, as in &ldquo;picked North Shop by default&rdquo;, and it picked North in the 4 episodes where South's card came first as well. So the plain results were influenced by the name North. Swapping the two shops' names would measure that influence on its own.</p>
@@ -1202,10 +1321,13 @@ curl -s http://127.0.0.1:9999/ -H <span class="st">'Content-Type: application/js
     <div class="secmark"><span class="no">READ</span><h2>Readings</h2></div>
     <ul class="readings">
       <li><span class="badge req">Required</span><b class="lead">Agent2Agent (A2A) Protocol Specification v1.0</b><span class="why">Section 3 Operations, section 4 Data Model (Task, TaskState, Message, Part, Artifact), section 8 Agent Card. Before the lab, read 3.1.1 Send Message and 3.4 Multi-Turn Interactions. <a href="https://a2a-protocol.org/v1.0.0/specification/">a2a-protocol.org/v1.0.0/specification</a></span></li>
-      <li><span class="badge req">Required</span><b class="lead">FIPA, &ldquo;ACL Message Structure Specification&rdquo; SC00061G (2002), from week 04</b><span class="why">The left column of the A4 mapping table. Check the parameter definitions again when you write the mapping table in your report. <a href="https://web.archive.org/web/2023/http://www.fipa.org/specs/fipa00061/SC00061G.html">SC00061G</a></span></li>
+      <li><span class="badge req">Required</span><b class="lead">FIPA, &ldquo;ACL Message Structure Specification&rdquo; SC00061G (2002), from week 04</b><span class="why">The left column of the A5 mapping table. Check the parameter definitions again when you write the mapping table in your report. <a href="https://web.archive.org/web/2023/http://www.fipa.org/specs/fipa00061/SC00061G.html">SC00061G</a></span></li>
+      <li><span class="badge req">Required</span><b class="lead">A2A Project, &ldquo;Meet the A2A CLI&rdquo; (2026)</b><span class="why">Installing and using the official CLI from the lab. The later part, <code class="inline">a2a server --exec</code>, turns any script into an A2A server. <a href="https://a2a-protocol.org/latest/blog/2026/10/01/introducing-a2a-cli/">a2a-protocol.org/latest/blog</a></span></li>
+      <li><span class="badge opt">Optional</span><b class="lead">AAIF, &ldquo;A2A joins AAIF&rsquo;s open agentic stack&rdquo; (2026)</b><span class="why">Why A2A moved to AAIF and where it runs. The layers in A2's FIG. 03 come from this post. <a href="https://aaif.io/blog/a2a-joins-aaif">aaif.io/blog/a2a-joins-aaif</a></span></li>
+      <li><span class="badge opt">Optional</span><b class="lead">A2A protocol roadmap</b><span class="why">What comes next: v1.1, BiDi streaming, negotiation patterns. <a href="https://a2a-protocol.org/latest/roadmap/">a2a-protocol.org/latest/roadmap</a></span></li>
       <li><span class="badge opt">Optional</span><b class="lead">What&rsquo;s New in A2A Protocol v1.0</b><span class="why">Names and formats changed since v0.3: method names (<code class="inline">message/send</code> to <code class="inline">SendMessage</code>), how state values are written, the card structure. Useful when reading v0.3 examples on the web. <a href="https://a2a-protocol.org/latest/whats-new-v1/">a2a-protocol.org/latest/whats-new-v1</a></span></li>
       <li><span class="badge opt">Optional</span><b class="lead">Google, &ldquo;Announcing the Agent2Agent Protocol (A2A)&rdquo; (2025)</b><span class="why">The announcement. How Google described the relation to MCP. <a href="https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/">developers.googleblog.com</a></span></li>
-      <li><span class="badge opt">Optional</span><b class="lead">FIPA, &ldquo;Agent Management Specification&rdquo; SC00023K (2004)</b><span class="why">How the Directory Facilitator registers and searches. The left side of A2's FIG. 03. <a href="http://web.archive.org/web/20240725175755/http://www.fipa.org/specs/fipa00023/SC00023K.html">SC00023K</a></span></li>
+      <li><span class="badge opt">Optional</span><b class="lead">FIPA, &ldquo;Agent Management Specification&rdquo; SC00023K (2004)</b><span class="why">How the Directory Facilitator registers and searches. The left side of A3's FIG. 05. <a href="http://web.archive.org/web/20240725175755/http://www.fipa.org/specs/fipa00023/SC00023K.html">SC00023K</a></span></li>
       <li><span class="badge opt">Optional</span><b class="lead">a2a-samples, helloworld (Python)</b><span class="why">The smallest server and client built with a2a-sdk 1.x. The lab's <code class="inline">seller_agent.py</code> follows its structure. <a href="https://github.com/a2aproject/a2a-samples/tree/main/samples/python/agents/helloworld">github.com/a2aproject/a2a-samples</a></span></li>
     </ul>
 

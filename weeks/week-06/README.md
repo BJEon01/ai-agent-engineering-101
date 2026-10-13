@@ -4,7 +4,7 @@
 
 ## Background
 
-In the lab you ran a rule-based seller as an A2A server and bought a lamp from it with curl: one task, `TASK_STATE_INPUT_REQUIRED` while the price was open, `TASK_STATE_COMPLETED` with a receipt artifact at the end.
+In the lab you ran a rule-based seller as an A2A server and bought a lamp from it with the a2a CLI: one task, `TASK_STATE_INPUT_REQUIRED` while the price was open, `TASK_STATE_COMPLETED` with a receipt artifact at the end.
 
 A buyer agent that has never met a seller knows only what the seller's Agent Card says, and the seller writes its own card. A2A v1.0 can sign a card (who published it, unchanged since), but nothing in the protocol checks whether the card's sentences are true. This assignment measures what one false sentence in a card does to a buyer agent's choice and to the deal it gets.
 
