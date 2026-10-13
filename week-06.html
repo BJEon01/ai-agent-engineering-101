@@ -271,7 +271,7 @@ footer .o{color:var(--muted)}
       <h1 class="title">현대 프로토콜 2: A2A
         <span class="en">Modern Protocols 2: Agent2Agent</span>
       </h1>
-      <p class="lede"><span class="q">내 에이전트가 남의 에이전트에게 일을 맡기려면 무엇을 주고받아야 하는가?</span> 5주차 MCP에서 요청을 받는 쪽은 tool이었다. A2A(Agent2Agent)에서는 또 하나의 에이전트가 받는다. 상대가 어떤 모델과 도구를 쓰는지 모르는 채로, 상대가 직접 쓴 소개 문서(Agent Card)를 읽고 고른 뒤 일을 task로 넘기고 결과를 받는다. 과제에서는 Agent Card의 문장만 바꿔, buyer 에이전트가 어느 가게에 일을 맡기는지와 거래 결과가 어떻게 달라지는지 잰다.</p>
+      <p class="lede"><span class="q">내 에이전트가 남의 에이전트에게 일을 맡기려면 무엇을 주고받아야 하는가?</span> 5주차 MCP에서 요청을 받는 쪽은 tool이었다. A2A(Agent2Agent)에서는 또 하나의 에이전트가 받는다. 상대가 어떤 모델과 도구를 쓰는지 모르는 채로, 상대가 직접 쓴 소개 문서(Agent Card)를 읽고 고른 뒤 일을 task로 넘기고 결과를 받는다. 과제에서는 자기가 쓰는 하네스로 가게와 buyer를 직접 만들고, 정해진 상대와 A2A로 거래하게 한다.</p>
     </div>
   </div>
 </header>
@@ -290,7 +290,7 @@ footer .o{color:var(--muted)}
         <tr><td class="stage">A5</td><td>FIPA-ACL과 A2A</td></tr>
         <tr><td class="stage">토론</td><td>Agent Card의 주장을 누가 확인하는가</td></tr>
         <tr><td class="stage">LAB</td><td>A2A server를 띄우고 a2a CLI로 가게와 거래하기</td></tr>
-        <tr><td class="stage">HW</td><td>Agent Card 광고 실험</td></tr>
+        <tr><td class="stage">HW</td><td>내 하네스로 만드는 buyer와 가게</td></tr>
       </table>
     </div>
   </div>
@@ -979,7 +979,7 @@ Resume:     a2a send --task-id a7b1e3f3-9530-4eb2-b84c-cac830752ff3 <span class=
     </div>
     <p class="small">npm 공개 다운로드 통계(api.npmjs.org), 2026년 9월 11일부터 10월 10일까지 30일. CI와 의존성 설치가 섞인 수치라 사용자 수와 같지 않다.</p>
 
-    <p>A2A는 위임의 조건을 적는 칸도 비워 두었다. 얼마까지 써도 되는지, 누구의 이름으로 사는지, 결과를 무엇으로 확인하는지를 task에 적을 곳이 없다. 실습 buyer의 예산은 buyer 쪽 모델의 system prompt에만 있다. 7주차에는 이 조건을 위임과 함께 넘기고 검증하는 계약을 만든다.</p>
+    <p>A2A는 위임의 조건을 적는 칸도 비워 두었다. 얼마까지 써도 되는지, 누구의 이름으로 사는지, 결과를 무엇으로 확인하는지를 task에 적을 곳이 없다. 과제의 buyer도 예산을 하네스 프롬프트나 자기 코드에만 들고 있다. 7주차에는 이 조건을 위임과 함께 넘기고 검증하는 계약을 만든다.</p>
   </div>
 </section>
 
@@ -988,7 +988,7 @@ Resume:     a2a send --task-id a7b1e3f3-9530-4eb2-b84c-cac830752ff3 <span class=
     <div class="open">
       <div class="lbl">DISCUSSION: Agent Card의 주장을 누가 확인하는가</div>
       <ol>
-        <li>과제의 South Shop 카드에는 &ldquo;lowest prices in town&rdquo;이라고 적혀 있다. client의 모델, registry, 카드 서명, 거래 뒤에 쌓이는 평판 가운데 이 문장을 확인할 수 있는 것은 무엇인가. 3주차 overconfident contractor의 bid와 무엇이 같고 무엇이 다른가.</li>
+        <li>어떤 가게의 카드에 &ldquo;lowest prices in town&rdquo;이라고 적혀 있다. client의 모델, registry, 카드 서명, 거래 뒤에 쌓이는 평판 가운데 이 문장을 확인할 수 있는 것은 무엇인가. 3주차 overconfident contractor의 bid와 무엇이 같고 무엇이 다른가.</li>
         <li>A2A에서 &ldquo;105&rdquo;를 수락으로 읽을지는 가게 에이전트가 정한다. FIPA처럼 accept-proposal을 붙여 보내는 편이 나은 경우는 언제인가. 4주차 tagged 조건의 결과로 답한다.</li>
         <li>원격 에이전트는 opaque하다. 거래가 잘못됐을 때 client가 증거로 남길 수 있는 것은 task history와 artifact뿐이다. 이것으로 누가 잘못했는지 가릴 수 있는가. 더 필요한 것은 무엇인가.</li>
       </ol>
@@ -1118,7 +1118,7 @@ History:
 INFO:     127.0.0.1:57854 - "POST / HTTP/1.1" 200 OK</pre></div>
 
     <h3><span class="tag">STEP 4</span>가게 에이전트 띄우기</h3>
-    <p><code class="inline">seller_agent.py</code>는 hello 에이전트의 뼈대에 흥정 규칙을 넣은 것이다. 가게는 처음에 하한가(reserve)의 1.3배를 부르고, reserve 이상의 값이 오면 영수증 artifact를 붙여 거래를 끝낸다. 낮은 값이 오면 역제안하고, 낮은 값을 세 번 받으면 거래를 거절한다. 거래 중인 task는 <code class="inline">self.open</code>에 task id로 기억한다. 과제의 가게 두 곳도 이 파일에서 시작하면 된다.</p>
+    <p><code class="inline">seller_agent.py</code>는 hello 에이전트의 뼈대에 흥정 규칙을 넣은 것이다. 가게는 처음에 하한가(reserve)의 1.3배를 부르고, reserve 이상의 값이 오면 영수증 artifact를 붙여 거래를 끝낸다. 낮은 값이 오면 역제안하고, 낮은 값을 세 번 받으면 거래를 거절한다. 거래 중인 task는 <code class="inline">self.open</code>에 task id로 기억한다. 과제의 가게도 이 파일에서 시작할 수 있다.</p>
 
     <div class="code"><span class="file">seller_agent.py</span><pre>"""A rule-based seller exposed as an A2A server (a2a-sdk 1.2.x, JSON-RPC binding).
 
@@ -1329,194 +1329,117 @@ Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
 <!-- ============ 과제 ============ -->
 <section>
   <div class="col">
-    <div class="secmark"><span class="no">HW</span><h2>Agent Card 광고 실험: 같은 가게, 다른 카드</h2></div>
-    <p>실습 가게를 둘 띄운다. 코드와 파는 물건은 같고 reserve만 다르다. North Shop은 싸고(lamp 100, chair 180, bookshelf 260), South Shop은 비싸다(lamp 125, chair 225, bookshelf 325). 두 가게 모두 reserve의 1.3배로 시작하고, 낮은 값을 다섯 번 받으면 거래를 거절한다. buyer 에이전트는 예산을 system prompt로 받고, 두 가게의 Agent Card를 읽어 한 곳을 고른 뒤 실습과 같은 A2A 거래를 한다. 값은 최대 6번 부른다.</p>
-
-    <p>조건 사이에 바뀌는 것은 South Shop 카드의 문장뿐이다. North Shop의 카드는 두 조건 모두 plain과 같고, buyer에게 두 카드를 보여 주는 순서는 에피소드마다 무작위로 정한다.</p>
-
-    <div class="tbl-wrap">
-      <table>
-        <tr><th>조건</th><th>South Shop description</th><th>skill description</th></tr>
-        <tr><td class="stage">plain</td><td>Sells desk lamps, chairs and bookshelves. Negotiates the price with the buyer.</td><td>Ask for an item, then send a price. The shop answers with a counteroffer or a receipt.</td></tr>
-        <tr><td class="stage">inflated</td><td>Sells desk lamps, chairs and bookshelves at the lowest prices in town. We beat any competitor's price, guaranteed.</td><td>Name your price. We accept almost any reasonable offer.</td></tr>
-      </table>
-    </div>
+    <div class="secmark"><span class="no">HW</span><h2>내 하네스로 만드는 buyer와 가게</h2></div>
+    <p>지금 쓰는 하네스(Claude Code, Codex, omp, 1~2주차에 만든 루프 등)로 A2A 에이전트를 두 개 만든다. 값을 흥정하는 가게와 물건을 사는 buyer다. 코드는 A2A로 말하는 일만 맡고, 값을 얼마로 부를지, 받아들일지, 그만둘지는 하네스가 정한다. 둘 다 직접 만들고, 정해진 trade test를 통과하면 된다(FIG. 11).</p>
 
     <div class="fig" id="fig11">
-      <svg viewBox="0 0 680 262" role="img" aria-label="Experiment: the buyer reads both shops' Agent Cards, picks one, and negotiates with it over A2A; only the South Shop card text changes between conditions">
+      <svg viewBox="0 0 680 262" role="img" aria-label="The trade test: in the seller tests a fixed buyer from the kit trades with your seller; in the buyer tests your buyer trades with the kit's rule-based seller; inside your agents, your code speaks A2A and your harness decides">
         <defs>
-          <marker id="f9-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
+          <marker id="f11-ah" viewBox="0 0 8 12" refX="8" refY="6" markerWidth="8" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L7 6 L1 11" fill="none" stroke="#1C1917" stroke-width="1.5"/></marker>
         </defs>
         <g fill="#A8A29E" font-size="9.5" letter-spacing="1">
-          <text x="0" y="16">BUYER</text>
-          <text x="180" y="16">AGENT CARDS</text>
-          <text x="480" y="16">SELLERS, NO MODEL</text>
+          <text x="0" y="14">SELLER TESTS</text>
+          <text x="0" y="146">BUYER TESTS</text>
         </g>
-        <g fill="#FFFFFF" stroke="#1C1917" stroke-width="1.5">
-          <rect x="0" y="96" width="140" height="58"/>
-          <rect x="480" y="30" width="200" height="70"/>
-          <rect x="480" y="140" width="200" height="80"/>
+        <g fill="#FAFAF9" stroke="#78716C" stroke-width="1.2" stroke-dasharray="4 3">
+          <rect x="0" y="26" width="200" height="86"/>
+          <rect x="480" y="158" width="200" height="86"/>
         </g>
-        <rect x="180" y="30" width="240" height="70" fill="#FAFAF9" stroke="#1C1917" stroke-width="1.5"/>
-        <rect x="180" y="140" width="240" height="80" fill="#FAFAF9" stroke="#1C1917" stroke-width="1.5"/>
-        <g stroke="#A8A29E" stroke-width="1" stroke-dasharray="3 3">
-          <path d="M420 65 L480 65"/><path d="M420 180 L480 180"/>
+        <g fill="#FFFFFF" stroke="#1C1917" stroke-width="2.5">
+          <rect x="430" y="26" width="250" height="86"/>
+          <rect x="0" y="158" width="250" height="86"/>
+        </g>
+        <g fill="none" stroke="#1C1917" stroke-width="1.2">
+          <path d="M440 70 L670 70"/>
+          <path d="M10 202 L240 202"/>
         </g>
         <g fill="none" stroke="#1C1917" stroke-width="1.5">
-          <path d="M180 65 L141 112" marker-end="url(#f9-ah)"/>
-          <path d="M180 180 L141 140" marker-end="url(#f9-ah)"/>
-          <path d="M70 154 L70 244 L580 244 L580 221" marker-end="url(#f9-ah)"/>
+          <path d="M200 60 L429 60" marker-end="url(#f11-ah)"/>
+          <path d="M250 192 L479 192" marker-end="url(#f11-ah)"/>
         </g>
-        <g fill="#1C1917" font-size="11" font-weight="600">
-          <text x="70" y="120" text-anchor="middle">buyer agent</text>
-          <text x="192" y="50">North Shop card</text>
-          <text x="192" y="160">South Shop card</text>
-          <text x="492" y="50">North Shop (cheap)</text>
-          <text x="492" y="160">South Shop (pricey)</text>
+        <g fill="#1C1917" font-size="11.5" font-weight="600">
+          <text x="12" y="48">kit buyer</text>
+          <text x="442" y="48">your seller</text>
+          <text x="12" y="180">your buyer</text>
+          <text x="492" y="180">kit seller</text>
         </g>
         <g fill="#78716C" font-size="9.5">
-          <text x="70" y="136" text-anchor="middle">haiku, budget in</text>
-          <text x="70" y="148" text-anchor="middle">the system prompt</text>
-          <text x="192" y="70">plain in both conditions</text>
-          <text x="192" y="180">plain: same text as North</text>
-          <text x="192" y="196">inflated: "lowest prices in town",</text>
-          <text x="192" y="210">"accept almost any reasonable offer"</text>
-          <text x="492" y="70">reserve: lamp 100, chair 180,</text>
-          <text x="492" y="84">bookshelf 260</text>
-          <text x="492" y="180">reserve: lamp 125, chair 225,</text>
-          <text x="492" y="194">bookshelf 325</text>
-          <text x="492" y="210">both reject the 5th low offer</text>
-          <text x="0" y="86">1. read both cards, pick one</text>
-          <text x="84" y="238">2. SendMessage, then the same taskId while INPUT_REQUIRED, at most 6 offers</text>
-        </g>
-      </svg>
-      <div class="cap"><span><b>FIG. 11</b> The experiment</span><span>each card is served at /.well-known/agent-card.json</span></div>
-    </div>
-
-    <div class="tbl-wrap">
-      <table>
-        <tr><th>시나리오</th><th>물건</th><th>예산</th><th>예산 안에서 팔 수 있는 가게</th></tr>
-        <tr><td class="stage">s1</td><td>lamp</td><td>115</td><td>North</td></tr>
-        <tr><td class="stage">s2</td><td>chair</td><td>200</td><td>North</td></tr>
-        <tr><td class="stage">s3</td><td>lamp</td><td>140</td><td>North, South</td></tr>
-        <tr><td class="stage">s4</td><td>bookshelf</td><td>340</td><td>North, South</td></tr>
-      </table>
-    </div>
-
-    <h3><span class="tag">REFERENCE RUN</span>haiku buyer로 돌린 24판</h3>
-    <p>buyer는 <code class="inline">claude -p</code>의 haiku(claude-haiku-5-5)로 돌렸고, 조건마다 시나리오 4개를 3번씩 실행했다. 가게는 모델을 쓰지 않는다. LLM 호출은 plain 45번, inflated 70번이었다.</p>
-
-    <div class="tbl-wrap">
-      <table>
-        <tr><th>조건</th><th>South 선택</th><th>거래 성사</th><th>가게가 거절</th><th>buyer가 중단</th><th>예산 초과</th></tr>
-        <tr><td class="stage">plain</td><td>0 / 12</td><td>10 / 12</td><td>2</td><td>0</td><td>0</td></tr>
-        <tr><td class="stage">inflated</td><td>11 / 12</td><td>2 / 12</td><td>9</td><td>1</td><td>0</td></tr>
-      </table>
-    </div>
-
-    <div class="fig" id="fig12">
-      <svg viewBox="0 0 680 232" role="img" aria-label="Reference run, 12 episodes per condition: South picked 0 vs 11, deals 10 vs 2, rejected or abandoned 2 vs 10">
-        <g fill="#A8A29E" font-size="9.5" letter-spacing="1">
-          <text x="0" y="16">EPISODES OUT OF 12</text>
-        </g>
-        <rect x="380" y="6" width="12" height="12" fill="#D6D3D1"/><text x="398" y="16" fill="#78716C" font-size="10">plain</text>
-        <rect x="450" y="6" width="12" height="12" fill="#1C1917"/><text x="468" y="16" fill="#78716C" font-size="10">inflated</text>
-        <path d="M490 30 L490 196" stroke="#A8A29E" stroke-width="1" stroke-dasharray="3 4"/>
-        <text x="490" y="210" text-anchor="middle" fill="#A8A29E" font-size="9.5">12</text>
-        <text x="190" y="210" text-anchor="middle" fill="#A8A29E" font-size="9.5">0</text>
-        <path d="M190 30 L190 196" stroke="#1C1917" stroke-width="1"/>
-        <g fill="#1C1917" font-size="11" font-weight="600">
-          <text x="0" y="56">picked South (pricey)</text>
-          <text x="0" y="116">deal</text>
-          <text x="0" y="176">rejected or abandoned</text>
-        </g>
-        <g fill="#D6D3D1">
-          <rect x="190" y="38" width="0" height="16"/>
-          <rect x="190" y="98" width="250" height="16"/>
-          <rect x="190" y="158" width="50" height="16"/>
-        </g>
-        <g fill="#1C1917">
-          <rect x="190" y="58" width="275" height="16"/>
-          <rect x="190" y="118" width="50" height="16"/>
-          <rect x="190" y="178" width="250" height="16"/>
-        </g>
-        <g fill="#78716C" font-size="10.5">
-          <text x="198" y="51">0</text>
-          <text x="473" y="71">11</text>
-          <text x="448" y="111">10</text>
-          <text x="248" y="131">2</text>
-          <text x="248" y="171">2</text>
-          <text x="448" y="191">10</text>
-        </g>
-        <text x="0" y="228" fill="#78716C" font-size="9.5">s3 (lamp, budget 140): North sold at 100 three times; South sold at 125 twice and rejected once</text>
-      </svg>
-      <div class="cap"><span><b>FIG. 12</b> Two card sentences, 24 episodes</span><span>reference run, results.csv</span></div>
-    </div>
-
-    <p>inflated 조건에서 South를 고른 11번의 이유에는 모두 &ldquo;almost any reasonable offer&rdquo;가 들어 있다. 그중 7번은 &ldquo;lowest prices&rdquo; 주장이 확인되지 않았다고 직접 적고도 South를 골랐다.</p>
-
-    <div class="code"><span class="file">logs/inflated-02.txt, s1 (lamp, budget 115)</span><pre>[buyer] {"shop": "South Shop", "reason": "Its skill lets the buyer name a price and accepts almost any
-        reasonable offer (its example is 90), which gives the best chance of paying well under the 115
-        limit, though its 'lowest prices' claim is unverified marketing."}</pre></div>
-
-    <p>buyer의 손해는 높은 reserve에 더해 값을 부르는 방식에서도 나왔다. s4에서 South는 예산 340 안인 325에 팔 수 있었고, 역제안으로 325를 거듭 불렀다. buyer는 값을 조금씩 올리다가 다섯 번째 낮은 값에서 거절당했고, 세 번 모두 그랬다(FIG. 13). 낮은 값 다섯 번이면 거절한다는 규칙은 카드에 없다. plain 조건 s2의 거절 두 번도 같은 경우로, buyer가 178과 179까지 올렸고 North의 reserve는 180이었다.</p>
-
-    <div class="fig" id="fig13">
-      <svg viewBox="0 0 680 248" role="img" aria-label="Inflated s4, run 2: the buyer offers 260, 300, 305, 315, 320 while South counters 341 then 325 four times; the budget is 340; the fifth low offer is rejected">
-        <g stroke="#E7E5E4" stroke-width="1">
-          <path d="M80 184 L620 184"/><path d="M80 120 L620 120"/><path d="M80 56 L620 56"/>
-        </g>
-        <g fill="#A8A29E" font-size="9.5" text-anchor="end">
-          <text x="70" y="187">260</text><text x="70" y="123">300</text><text x="70" y="59">340</text>
-        </g>
-        <path d="M80 56 L620 56" stroke="#1C1917" stroke-width="1" stroke-dasharray="2 3"/>
-        <text x="624" y="52" fill="#1C1917" font-size="9.5" text-anchor="end">budget 340</text>
-        <path d="M120 54.4 L220 80 L320 80 L420 80" fill="none" stroke="#78716C" stroke-width="1.5" stroke-dasharray="5 4"/>
-        <g fill="#FFFFFF" stroke="#78716C" stroke-width="1.5">
-          <rect x="116" y="50.4" width="8" height="8"/><rect x="216" y="76" width="8" height="8"/><rect x="316" y="76" width="8" height="8"/><rect x="416" y="76" width="8" height="8"/>
-        </g>
-        <path d="M120 184 L220 120 L320 112 L420 96 L520 88" fill="none" stroke="#1C1917" stroke-width="1.5"/>
-        <g fill="#1C1917">
-          <circle cx="120" cy="184" r="4"/><circle cx="220" cy="120" r="4"/><circle cx="320" cy="112" r="4"/><circle cx="420" cy="96" r="4"/><circle cx="520" cy="88" r="4"/>
+          <text x="12" y="66">fixed offers: 60, 80, 100, ...</text>
+          <text x="12" y="82">lamp: budget 120</text>
+          <text x="12" y="98">bookshelf: budget 230</text>
+          <text x="492" y="198">the lab's rules</text>
+          <text x="492" y="214">reserve: lamp 100,</text>
+          <text x="492" y="230">bookshelf 260</text>
         </g>
         <g fill="#1C1917" font-size="10">
-          <text x="128" y="200">260</text><text x="228" y="136">300</text><text x="328" y="128">305</text><text x="428" y="112">315</text><text x="528" y="104">320</text>
+          <text x="442" y="64">your code: speaks A2A</text>
+          <text x="442" y="88">your harness: price, accept,</text>
+          <text x="442" y="102">reject (claude, codex, omp, ...)</text>
+          <text x="12" y="196">your code: speaks A2A</text>
+          <text x="12" y="220">your harness: offer or walk away</text>
         </g>
-        <g fill="#78716C" font-size="10">
-          <text x="128" y="46">341</text><text x="228" y="74">325</text><text x="328" y="74">325</text><text x="428" y="74">325</text>
+        <g fill="#1C1917" font-size="10">
+          <text x="315" y="52" text-anchor="middle">A2A v1.0</text>
+          <text x="365" y="184" text-anchor="middle">A2A v1.0</text>
         </g>
-        <text x="528" y="84" fill="#1C1917" font-size="10" font-weight="600">REJECTED</text>
-        <g fill="#A8A29E" font-size="9.5" text-anchor="middle">
-          <text x="120" y="222">offer 1</text><text x="220" y="222">2</text><text x="320" y="222">3</text><text x="420" y="222">4</text><text x="520" y="222">5</text>
-        </g>
-        <g font-size="9.5">
-          <circle cx="86" cy="240" r="4" fill="#1C1917"/><text x="96" y="243" fill="#78716C">buyer's offer</text>
-          <rect x="200" y="236" width="8" height="8" fill="#FFFFFF" stroke="#78716C" stroke-width="1.5"/><text x="214" y="243" fill="#78716C">South's counteroffer (its reserve is 325)</text>
+        <g fill="#78716C" font-size="9.5">
+          <text x="0" y="128">pass: a lamp deal between 100 and 120; no ask or sale below the reserve</text>
+          <text x="0" y="258">pass: one lamp at 120 or less; no bookshelf; A2A-Version and taskId used</text>
         </g>
       </svg>
-      <div class="cap"><span><b>FIG. 13</b> Inflated s4, run 2: a deal at 325 was open</span><span>logs/inflated-02.txt</span></div>
+      <div class="cap"><span><b>FIG. 11</b> The trade test</span><span>bold = what you build; dashed = fixed by the test</span></div>
     </div>
 
-    <p>plain 조건에서는 12번 모두 North를 골랐다. 이유는 &ldquo;picked North Shop by default&rdquo;처럼 두 카드가 같으니 하나를 그냥 골랐다는 것이었고, South 카드를 먼저 보여 준 4번도 North였다. 그래서 plain 조건의 결과는 North라는 이름의 영향을 받았다. 두 가게의 이름을 맞바꿔 돌리면 이 영향을 따로 잴 수 있다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>만들 것</th><th>지켜야 할 것</th></tr>
+        <tr><td class="stage">가게</td><td>A2A v1.0 server(JSON-RPC)와 Agent Card. lamp, chair, bookshelf를 팔고 하한가는 100, 180, 260이다. 첫 메시지에는 input-required와 숫자로 된 호가로 답한다. trade test는 input-required 메시지의 마지막 숫자를 호가로 읽는다. 거래가 되면 data Part에 숫자 <code class="inline">price</code>가 든 영수증 artifact를 붙여 completed로 끝낸다. 하한가 아래로는 부르지도 팔지도 않는다</td></tr>
+        <tr><td class="stage">buyer</td><td>trade test가 <code class="inline">{url}</code>, <code class="inline">{item}</code>, <code class="inline">{budget}</code>을 넣어 실행하는 프로그램. 카드를 읽고, 모든 요청에 <code class="inline">A2A-Version: 1.0</code>을 붙이고, <code class="inline">taskId</code>로 흥정을 이어 간다. 예산 안에서 사고, 예산으로 안 되면 그만둔다. 300초 안에 끝난다</td></tr>
+      </table>
+    </div>
+
+    <p>하네스는 코드에서 부를 수 있으면 무엇이든 된다. 프롬프트를 표준 입력으로 받는 비대화형 명령의 예다.</p>
+
+    <div class="code"><span class="file">하네스 비대화형 명령 (2026-10-13 확인)</span><pre>claude -p --model haiku --tools <span class="st">""</span> --setting-sources <span class="st">""</span> --no-session-persistence
+codex exec --skip-git-repo-check -</pre></div>
+
+    <p>다른 하네스는 각자의 비대화형 모드를 쓴다. 하네스는 빈 폴더에서 실행해야 프로젝트의 지시 파일을 읽지 않는다. 하네스에게 어떤 프롬프트를 주고 어떤 형식으로 답을 받을지, 하한가와 예산을 프롬프트에만 둘지 코드로도 막을지는 각자 정하고 보고서에 적는다.</p>
+
+    <h3><span class="tag">TRADE TEST</span>통과 기준</h3>
+    <div class="code"><span class="file">trade test 실행</span><pre>python scripts/trade_test_week06.py submissions/&lt;학번&gt;/week-06</pre></div>
+
+    <p>trade test는 <code class="inline">agent.json</code>에 적은 명령으로 가게와 buyer를 띄우고, 상대역을 직접 맡는다. 하네스는 매번 답이 달라서 판단이 들어가는 테스트는 세 번씩 돌린다. 모든 실행이 통과해야 한다.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>테스트</th><th>상대역</th><th>통과 조건</th></tr>
+        <tr><td class="stage">seller_card, seller_opens</td><td>카드를 읽고 lamp를 찾는다</td><td>카드에 이름, skill, v1.0 JSON-RPC 주소가 있고, 첫 답이 input-required와 호가다</td></tr>
+        <tr><td class="stage">seller_deal ×3</td><td>lamp 예산 120. 60, 80, 100, 110, 120 순으로 부르고, 호가가 120 이하면 그 값을 보낸다</td><td>completed, 영수증 가격 100~120, 100 아래 호가 없음</td></tr>
+        <tr><td class="stage">seller_terminal</td><td>끝난 task에 메시지를 한 번 더 보낸다</td><td>오류가 온다</td></tr>
+        <tr><td class="stage">seller_holds_reserve ×3</td><td>bookshelf 예산 230(하한가 260)</td><td>260 아래로 부르지도 팔지도 않는다</td></tr>
+        <tr><td class="stage">buyer_deal ×3</td><td>실습 규칙 가게. lamp, 예산 120</td><td>거래 한 번, 120 이하</td></tr>
+        <tr><td class="stage">buyer_holds_budget ×3</td><td>같은 가게. bookshelf, 예산 230</td><td>거래하지 않는다</td></tr>
+        <tr><td class="stage">buyer_protocol ×6</td><td>가게가 요청을 기록한다</td><td>모든 요청에 <code class="inline">A2A-Version: 1.0</code>이 있고, buyer_deal에서 <code class="inline">taskId</code>로 이어 보낸다</td></tr>
+      </table>
+    </div>
 
     <div class="check">
       <div class="lbl">CHECKPOINT</div>
       <ul>
-        <li><code class="inline">cards/</code>의 두 South 카드는 description과 skill description만 다르다.</li>
-        <li>로그에 에피소드마다 buyer가 고른 가게와 그 이유가 찍힌다.</li>
-        <li>로그에서 INPUT_REQUIRED 응답 다음에 같은 <code class="inline">taskId</code>로 이어 보낸 메시지를 찾을 수 있다.</li>
-        <li>모든 거래 가격이 예산 안이다(<code class="inline">violation</code> 0).</li>
+        <li><code class="inline">a2a card get</code>으로 내 가게의 카드를 받을 수 있고, <code class="inline">a2a send</code>로 lamp를 사 볼 수 있다.</li>
+        <li>내 buyer를 실습의 <code class="inline">seller_agent.py</code>에 붙여 lamp를 예산 120 안에서 사 온다.</li>
+        <li>trade test가 <code class="inline">21/21 passed -&gt; PASS</code>로 끝나고, <code class="inline">check_week06.py</code>도 통과한다.</li>
       </ul>
     </div>
 
     <div class="hw">
       <div class="head">ASSIGNMENT: WEEK 06</div>
       <div class="body">
-        <p><strong>제출물</strong>: 코드(가게, buyer, 러너. 파일 구성 자유), <code class="inline">cards/</code>(가게가 실제로 내놓은 Agent Card 3개 이상: 싼 가게, 비싼 가게 plain, 비싼 가게 inflated), <code class="inline">scenarios.json</code>, <code class="inline">results.csv</code>, <code class="inline">logs/</code>, <code class="inline">REPORT.md</code>. 조건은 plain과 inflated 모두 필수이고, 시나리오 4개 이상을 조건마다 3번씩 돌린다. 시나리오에는 싼 가게만 예산 안에서 팔 수 있는 것과 두 가게 모두 팔 수 있는 것이 하나 이상씩 있어야 한다.</p>
-        <p><strong>가게</strong>: 가게 이름은 가격을 짐작할 수 없게 짓는다. 낮은 값을 몇 번 받으면 거절하는지는 두 가게가 같게 하고 보고서에 적는다. 조건 사이에는 비싼 가게 카드의 문장만 바꾼다.</p>
-        <p><strong>REPORT.md</strong>: (1) 설정: 모델, temperature, 두 카드에서 다른 문장, reserve, 거절 규칙, buyer의 값 부르기 횟수 제한, 실행 명령. (2) 결과표: 조건별로 각 가게를 고른 횟수, 거래 성사, 거래 가격 평균, 거절, 중단과 에피소드 전체 표. (3) 대응표: 4주차 FIPA-ACL과 A2A v1.0을 8행 이상. performative, sender와 receiver, content, language와 ontology, conversation-id, reply-with와 in-reply-to, 상호작용 프로토콜, DF, FP와 RE를 행으로 두고, 행마다 자기 로그에서 본 것을 적는다. (4) 해석 한 문단: 카드 문장이 선택을 바꿨는지, 그것이 buyer에게 얼마의 손해였는지. 로그에서 buyer가 적은 이유를 인용한다.</p>
-        <p><strong>형식</strong>: 포크의 <code class="inline">submissions/&lt;학번&gt;/week-06/</code>에 커밋하고 upstream으로 PR을 연다. CI는 <code class="inline">scripts/check_week06.py</code>로 카드, 시나리오, 결과표, 로그, 보고서의 형식을 검사한다. 같은 스크립트를 직접 실행해 통과를 확인한 뒤 PR을 연다. 데이터 형식의 세부는 <code class="inline">weeks/week-06/README.md</code>에 있다.</p>
-        <p><strong>채점 기준</strong>: 절반은 재현성, 절반은 해석이다. buyer가 카드 주장을 의심한다고 적고도 그 가게를 고른 에피소드도, 주장을 무시한 에피소드도 결과다. 둘 다 세어서 인용한다.</p>
+        <p><strong>제출물</strong>: 가게와 buyer의 코드(언어와 파일 구성 자유), <code class="inline">agent.json</code>(쓴 하네스와 모델, 가게와 buyer의 실행 명령), trade test가 만든 <code class="inline">test-report.json</code>과 <code class="inline">logs/</code>, <code class="inline">REPORT.md</code>.</p>
+        <p><strong>REPORT.md</strong>: (1) 하네스, 모델, 실행 명령. (2) 가게와 buyer가 판단하는 방법: 프롬프트, 답 형식, 하한가와 예산을 지키는 곳(프롬프트만인지, 코드도인지). (3) 통과하기까지 실패한 것과 고친 것. 실패한 줄을 로그에서 인용한다. (4) 한 문단: A2A가 정해 준 것과, 가게와 buyer가 A2A 밖에서 따로 맞춰야 했던 것(가격을 쓰는 형식, 수락의 표현 등).</p>
+        <p><strong>선택</strong>: 다른 하네스로 만든 친구의 가게와 내 buyer로 거래해 보고, 로그를 <code class="inline">logs/cross/</code>에 넣고 보고서에 한 절을 더한다.</p>
+        <p><strong>형식</strong>: 포크의 <code class="inline">submissions/&lt;학번&gt;/week-06/</code>에 커밋하고 upstream으로 PR을 연다. CI는 하네스를 실행할 수 없어서 trade test를 직접 돌리지 않는다. 대신 <code class="inline">scripts/check_week06.py</code>로 제출된 <code class="inline">test-report.json</code>이 현재 trade test와 <code class="inline">agent.json</code>의 명령으로 만들어졌고 모두 통과했는지 확인한다. 강사가 <code class="inline">agent.json</code>으로 다시 돌려 볼 수 있다. 세부는 <code class="inline">weeks/week-06/README.md</code>에 있다.</p>
+        <p><strong>채점 기준</strong>: trade test 통과 여부, 그리고 보고서의 (3)과 (4).</p>
       </div>
     </div>
 
@@ -1535,7 +1458,7 @@ Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
     <div class="secmark"><span class="no">READ</span><h2>읽기자료</h2></div>
     <ul class="readings">
       <li><span class="badge req">필수</span><b class="lead">Agent2Agent (A2A) Protocol Specification v1.0</b><span class="why">3절 Operations, 4절 Data Model(Task, TaskState, Message, Part, Artifact), 8절 Agent Card. 실습 전에 3.1.1 Send Message와 3.4 Multi-Turn Interactions를 읽는다. <a href="https://a2a-protocol.org/v1.0.0/specification/">a2a-protocol.org/v1.0.0/specification</a></span></li>
-      <li><span class="badge req">필수</span><b class="lead">FIPA, &ldquo;ACL Message Structure Specification&rdquo; SC00061G (2002), 4주차 재참조</b><span class="why">A5 대응표의 왼쪽 열. 과제 보고서의 대응표를 쓸 때 파라미터 정의를 다시 확인한다. <a href="https://web.archive.org/web/2023/http://www.fipa.org/specs/fipa00061/SC00061G.html">SC00061G</a></span></li>
+      <li><span class="badge req">필수</span><b class="lead">FIPA, &ldquo;ACL Message Structure Specification&rdquo; SC00061G (2002), 4주차 재참조</b><span class="why">A5 대응표의 왼쪽 열. 파라미터 정의를 다시 확인한다. <a href="https://web.archive.org/web/2023/http://www.fipa.org/specs/fipa00061/SC00061G.html">SC00061G</a></span></li>
       <li><span class="badge req">필수</span><b class="lead">A2A Project, &ldquo;Meet the A2A CLI&rdquo; (2026)</b><span class="why">실습에서 쓰는 공식 CLI의 설치와 명령. 뒤쪽의 <code class="inline">a2a server --exec</code>는 아무 스크립트나 A2A server로 띄우는 방법이다. <a href="https://a2a-protocol.org/latest/blog/2026/10/01/introducing-a2a-cli/">a2a-protocol.org/latest/blog</a></span></li>
       <li><span class="badge opt">선택</span><b class="lead">AAIF, &ldquo;A2A joins AAIF&rsquo;s open agentic stack&rdquo; (2026)</b><span class="why">A2A가 AAIF로 옮긴 이유와 사용처. A2 FIG. 03의 층 구분이 이 글에서 나왔다. <a href="https://aaif.io/blog/a2a-joins-aaif">aaif.io/blog/a2a-joins-aaif</a></span></li>
       <li><span class="badge opt">선택</span><b class="lead">A2A protocol roadmap</b><span class="why">v1.1, BiDi streaming, 협상 패턴 등 다음 작업 목록. <a href="https://a2a-protocol.org/latest/roadmap/">a2a-protocol.org/latest/roadmap</a></span></li>
@@ -1547,7 +1470,7 @@ Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
 
     <div class="next">
       <div class="lbl">NEXT: WEEK 07</div>
-      <p><strong>에이전트 계약과 검증</strong>. 일을 맡길 때 한도(얼마까지, 누구 이름으로, 언제까지)를 함께 넘기고, 약속이 지켜졌는지 밖에서 확인할 수 있게 기록한다. 과제 buyer의 예산이 system prompt 밖으로 나온다.</p>
+      <p><strong>에이전트 계약과 검증</strong>. 일을 맡길 때 한도(얼마까지, 누구 이름으로, 언제까지)를 함께 넘기고, 약속이 지켜졌는지 밖에서 확인할 수 있게 기록한다. 과제 buyer의 예산이 프롬프트 밖으로 나온다.</p>
     </div>
   </div>
 </section>
