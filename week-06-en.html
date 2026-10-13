@@ -554,6 +554,15 @@ footer .o{color:var(--muted)}
 
     <p>Besides the well-known URI, a client can look a card up in a registry that collects cards, or use a card address configured in advance.</p>
 
+    <h3><span class="tag">TRY IT</span>Fetch a shop's card</h3>
+    <p>Finish LAB STEP 1 first and save the <code class="inline">seller_agent.py</code> of STEP 4 as a file. Start the shop in terminal 1, then fetch its card in terminal 2 once with the CLI and once with curl.</p>
+
+    <div class="code"><span class="file">terminal 1</span><pre>python seller_agent.py               <span class="cm"># http://127.0.0.1:9999</span></pre></div>
+    <div class="code"><span class="file">terminal 2</span><pre>a2a card get http://127.0.0.1:9999
+curl -s http://127.0.0.1:9999/.well-known/agent-card.json | python -m json.tool</pre></div>
+
+    <p>Find <code class="inline">supportedInterfaces</code> and <code class="inline">skills</code> in both outputs. A skill has no argument format (JSON Schema).</p>
+
     <h3><span class="tag">FIPA</span>Directory Facilitator: finding agents in FIPA</h3>
     <p>In the FIPA specifications, agents run on an agent platform. Each platform has one AMS (Agent Management System), which manages agent names and addresses. The specification calls the AMS the white pages and the DF (Directory Facilitator) the yellow pages: in the AMS you look an agent up by name, in the DF by the kind of service it offers.</p>
 
@@ -838,6 +847,17 @@ Resume:     a2a send --task-id a7b1e3f3-9530-4eb2-b84c-cac830752ff3 <span class=
       </svg>
       <div class="cap"><span><b>FIG. 08</b> One purchase, one task</span><span>lab/logs/lab-cli.txt</span></div>
     </div>
+
+    <h3><span class="tag">TRY IT</span>Buy a lamp once</h3>
+    <p>Send these to the shop from above, in terminal 2, in order. Replace <code class="inline">&lt;id&gt;</code> with the task id on the <code class="inline">Resume</code> line at the end of the first output.</p>
+
+    <div class="code"><span class="file">terminal 2</span><pre>a2a send -a http://127.0.0.1:9999 <span class="st">"I want to buy a lamp"</span>     <span class="cm"># input-required, asking 130</span>
+a2a send -a http://127.0.0.1:9999 --task-id &lt;id&gt; 80          <span class="cm"># Counteroffer: 105</span>
+a2a send -a http://127.0.0.1:9999 --task-id &lt;id&gt; 105         <span class="cm"># completed + receipt</span>
+a2a task get -a http://127.0.0.1:9999 &lt;id&gt; -o json           <span class="cm"># TASK_STATE_COMPLETED</span>
+a2a send -a http://127.0.0.1:9999 --task-id &lt;id&gt; 110         <span class="cm"># finished task: error</span></pre></div>
+
+    <p>With <code class="inline">-o json</code> the state reads <code class="inline">TASK_STATE_COMPLETED</code>, the same value the CLI shows as completed.</p>
 
     <p>When a task runs long, the client chooses how to wait for the result. It can ask again with <code class="inline">GetTask</code> (polling), or keep a connection open with <code class="inline">SendStreamingMessage</code> and receive state changes as Server-Sent Events. If the client registers a webhook address, the server sends a notification there whenever the state changes (push notification). The server states in the Agent Card's <code class="inline">capabilities</code> whether it supports streaming and push notifications.</p>
 
@@ -1313,6 +1333,22 @@ Status:   rejected (2026-10-13T05:21:01Z)
 $ a2a send ... "I want to buy a bookshelf", then a2a task cancel
 Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
 
+    <h3><span class="tag">STEP 6</span>A harness as an A2A server, in one line</h3>
+    <p>The CLI's <code class="inline">--exec</code> wraps any program that reads a message on stdin and answers on stdout as an A2A server. Wrapping Claude Code looks like this. Stop the shop server with Ctrl+C first.</p>
+
+    <div class="code"><span class="file">terminal 1</span><pre>a2a server --exec <span class="st">"claude -p --model haiku --system-prompt 'You are a furniture shop. You sell lamps. Answer in English, in one short sentence.'"</span> \
+  --name <span class="st">"Claude Shop"</span> --port 8090</pre></div>
+    <div class="code"><span class="file">terminal 2</span><pre>$ a2a send -a http://localhost:8090 <span class="st">"Do you sell lamps? How much?"</span>
+Task:     01a1341a-911a-7ba8-8341-deafdf73cdb8
+Context:  01a1341a-911a-7cdc-8f74-74d95c6145dc
+Status:   completed (2026-10-13T16:12:05+09:00)
+Artifacts:
+  [01a1341a-a9fd-76b6-a775-e1ba5074dbf3] Yes, we sell lamps, but I don't have their prices in front of me, so please check our current catalog or contact the shop for pricing.
+History:
+  [user] Do you sell lamps? How much?</pre></div>
+
+    <p>Every message becomes a new task that ends completed at once. Nothing carries over from the previous message, so it cannot do anything that takes several rounds, such as bargaining. The answer differs from run to run.</p>
+
     <div class="check">
       <div class="lbl">CHECKPOINT</div>
       <ul>
@@ -1322,6 +1358,7 @@ Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
         <li>The lamp deal goes input-required (asking 130), input-required (Counteroffer: 105), completed, and the receipt price is 105.</li>
         <li>A message to the finished task ends with <code class="inline">UNSUPPORTED_OPERATION</code> and exit code 1.</li>
         <li>The sofa and the three low offers end rejected; <code class="inline">a2a task cancel</code> ends canceled.</li>
+        <li>A message to Claude Shop comes back as a completed task with Claude's answer as the artifact.</li>
       </ul>
     </div>
   </div>

@@ -554,6 +554,15 @@ footer .o{color:var(--muted)}
 
     <p>client는 잘 알려진 주소(well-known URI) 말고도, 카드를 모아 둔 registry에서 찾거나 미리 설정해 둔 카드 주소를 쓸 수 있다.</p>
 
+    <h3><span class="tag">TRY IT</span>가게 카드 받아 보기</h3>
+    <p>LAB STEP 1 준비를 먼저 끝내고, STEP 4의 <code class="inline">seller_agent.py</code>를 파일로 저장해 둔다. 터미널 1에서 가게를 띄우고, 터미널 2에서 카드를 CLI와 curl로 한 번씩 받는다.</p>
+
+    <div class="code"><span class="file">터미널 1</span><pre>python seller_agent.py               <span class="cm"># http://127.0.0.1:9999</span></pre></div>
+    <div class="code"><span class="file">터미널 2</span><pre>a2a card get http://127.0.0.1:9999
+curl -s http://127.0.0.1:9999/.well-known/agent-card.json | python -m json.tool</pre></div>
+
+    <p>두 출력에서 <code class="inline">supportedInterfaces</code>와 <code class="inline">skills</code>를 찾는다. skill에는 인자 형식(JSON Schema)이 없다.</p>
+
     <h3><span class="tag">FIPA</span>Directory Facilitator: FIPA의 에이전트 찾기</h3>
     <p>FIPA 규격에서 에이전트는 에이전트 플랫폼(agent platform) 위에서 돌아간다. AMS(Agent Management System)는 플랫폼마다 하나씩 있고, 에이전트의 이름과 주소를 관리한다. 규격은 AMS를 white pages, DF(Directory Facilitator)를 yellow pages라고 부른다. 전화번호부의 인명편과 업종편을 가리키는 말로, AMS에서는 이름으로, DF에서는 서비스 종류로 상대를 찾는다.</p>
 
@@ -838,6 +847,17 @@ Resume:     a2a send --task-id a7b1e3f3-9530-4eb2-b84c-cac830752ff3 <span class=
       </svg>
       <div class="cap"><span><b>FIG. 08</b> One purchase, one task</span><span>lab/logs/lab-cli.txt</span></div>
     </div>
+
+    <h3><span class="tag">TRY IT</span>램프 한 번 사 보기</h3>
+    <p>앞에서 띄운 가게에 터미널 2에서 차례로 보낸다. <code class="inline">&lt;id&gt;</code>에는 첫 출력 마지막 줄 <code class="inline">Resume</code>의 task id를 넣는다.</p>
+
+    <div class="code"><span class="file">터미널 2</span><pre>a2a send -a http://127.0.0.1:9999 <span class="st">"I want to buy a lamp"</span>     <span class="cm"># input-required, asking 130</span>
+a2a send -a http://127.0.0.1:9999 --task-id &lt;id&gt; 80          <span class="cm"># Counteroffer: 105</span>
+a2a send -a http://127.0.0.1:9999 --task-id &lt;id&gt; 105         <span class="cm"># completed + receipt</span>
+a2a task get -a http://127.0.0.1:9999 &lt;id&gt; -o json           <span class="cm"># TASK_STATE_COMPLETED</span>
+a2a send -a http://127.0.0.1:9999 --task-id &lt;id&gt; 110         <span class="cm"># 끝난 task: 오류</span></pre></div>
+
+    <p><code class="inline">-o json</code>을 붙인 출력에서는 상태가 <code class="inline">TASK_STATE_COMPLETED</code>로 나온다. CLI 화면의 completed와 같은 값이다.</p>
 
     <p>task가 오래 걸리면 client는 결과를 기다리는 방법을 고른다. <code class="inline">GetTask</code>로 상태를 다시 물을 수 있고(polling), <code class="inline">SendStreamingMessage</code>로 연결을 열어 둔 채 Server-Sent Events로 상태 변화를 받을 수 있다. client가 webhook 주소를 등록해 두면 server가 상태가 바뀔 때 그 주소로 알림을 보낸다(push notification). server는 streaming과 push notification을 지원하는지 Agent Card의 <code class="inline">capabilities</code>에 적는다.</p>
 
@@ -1312,6 +1332,22 @@ Status:   rejected (2026-10-13T05:21:01Z)
 $ a2a send ... "I want to buy a bookshelf", then a2a task cancel
 Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
 
+    <h3><span class="tag">STEP 6</span>하네스를 한 줄로 A2A server로 만들기</h3>
+    <p>CLI의 <code class="inline">--exec</code>는 표준 입력으로 메시지를 받아 표준 출력으로 답하는 프로그램을 A2A server로 감싼다. Claude Code를 감싸면 이렇다. 가게 server는 Ctrl+C로 끄고 시작한다.</p>
+
+    <div class="code"><span class="file">터미널 1</span><pre>a2a server --exec <span class="st">"claude -p --model haiku --system-prompt 'You are a furniture shop. You sell lamps. Answer in English, in one short sentence.'"</span> \
+  --name <span class="st">"Claude Shop"</span> --port 8090</pre></div>
+    <div class="code"><span class="file">터미널 2</span><pre>$ a2a send -a http://localhost:8090 <span class="st">"Do you sell lamps? How much?"</span>
+Task:     01a1341a-911a-7ba8-8341-deafdf73cdb8
+Context:  01a1341a-911a-7cdc-8f74-74d95c6145dc
+Status:   completed (2026-10-13T16:12:05+09:00)
+Artifacts:
+  [01a1341a-a9fd-76b6-a775-e1ba5074dbf3] Yes, we sell lamps, but I don't have their prices in front of me, so please check our current catalog or contact the shop for pricing.
+History:
+  [user] Do you sell lamps? How much?</pre></div>
+
+    <p>메시지마다 새 task가 생기고 바로 completed로 끝난다. 앞의 대화가 이어지지 않아서 흥정처럼 여러 번 주고받는 일에는 쓸 수 없다. 답의 내용은 실행할 때마다 다르다.</p>
+
     <div class="check">
       <div class="lbl">CHECKPOINT</div>
       <ul>
@@ -1321,6 +1357,7 @@ Status:   canceled (2026-10-13T05:21:01Z)</pre></div>
         <li>램프 거래가 input-required(asking 130), input-required(Counteroffer: 105), completed 순서로 가고, 영수증의 price가 105다.</li>
         <li>끝난 task에 보낸 메시지가 <code class="inline">UNSUPPORTED_OPERATION</code>과 exit code 1로 끝난다.</li>
         <li>sofa와 낮은 값 세 번은 rejected로, <code class="inline">a2a task cancel</code>은 canceled로 끝난다.</li>
+        <li>Claude Shop에 보낸 메시지가 completed task와 Claude의 답 artifact로 돌아온다.</li>
       </ul>
     </div>
   </div>
