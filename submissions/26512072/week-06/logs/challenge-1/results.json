@@ -10,6 +10,7 @@
     "asks": [
       77,
       65,
+      60,
       58
     ],
     "item_fits": true,
@@ -20,19 +21,19 @@
   {
     "request": "a low glass unit for a 80 inch television",
     "target": "c02325",
-    "picked": "c00129",
-    "picked_name": "Dark Brown glass bookshelf, 66 books, 74 cm",
-    "picked_reserve": 200,
+    "picked": "c02333",
+    "picked_name": "Beige glass tv stand, 80 inch tv, 45 cm",
+    "picked_reserve": 190,
     "state": "TASK_STATE_COMPLETED",
-    "price": 240.0,
+    "price": 230.0,
     "asks": [
-      280,
-      240
+      250,
+      230
     ],
-    "item_fits": false,
+    "item_fits": true,
     "ask_below_reserve": false,
     "sold_below_reserve": false,
-    "pass": false
+    "pass": true
   },
   {
     "request": "a metal table where 4 people can eat together",
@@ -72,16 +73,20 @@
   {
     "request": "a metal couch that seats 2",
     "target": "c02492",
-    "picked": null,
-    "picked_name": null,
-    "picked_reserve": null,
-    "state": "TASK_STATE_REJECTED",
-    "price": null,
-    "asks": [],
-    "item_fits": false,
+    "picked": "c02483",
+    "picked_name": "Dark Brown steel sofa, 2 seats, 86 cm",
+    "picked_reserve": 660,
+    "state": "TASK_STATE_COMPLETED",
+    "price": 700.0,
+    "asks": [
+      858,
+      750,
+      700
+    ],
+    "item_fits": true,
     "ask_below_reserve": false,
     "sold_below_reserve": false,
-    "pass": false
+    "pass": true
   },
   {
     "request": "a tall metal closet for about 22 hangers",
@@ -92,7 +97,7 @@
     "state": "TASK_STATE_COMPLETED",
     "price": 500.0,
     "asks": [
-      650,
+      600,
       550,
       500
     ],
@@ -126,16 +131,20 @@
   {
     "request": "a tall wooden closet for about 33 hangers",
     "target": "c01617",
-    "picked": null,
-    "picked_name": null,
-    "picked_reserve": null,
-    "state": "TASK_STATE_REJECTED",
-    "price": null,
-    "asks": [],
-    "item_fits": false,
+    "picked": "c01609",
+    "picked_name": "Green oak wardrobe, 33 hangers, 206 cm",
+    "picked_reserve": 555,
+    "state": "TASK_STATE_COMPLETED",
+    "price": 620.0,
+    "asks": [
+      712,
+      680,
+      620
+    ],
+    "item_fits": true,
     "ask_below_reserve": false,
     "sold_below_reserve": false,
-    "pass": false
+    "pass": true
   },
   {
     "request": "a small metal bedside table with 2 drawers",
@@ -164,7 +173,7 @@
     "price": 95.0,
     "asks": [
       126,
-      108,
+      110,
       95
     ],
     "item_fits": true,
@@ -181,8 +190,7 @@
     "state": "TASK_STATE_COMPLETED",
     "price": 160.0,
     "asks": [
-      196,
-      180,
+      182,
       160
     ],
     "item_fits": true,
@@ -193,15 +201,19 @@
   {
     "request": "a low wooden unit for a 81 inch television",
     "target": "c02208",
-    "picked": null,
-    "picked_name": null,
-    "picked_reserve": null,
-    "state": "TASK_STATE_REJECTED",
-    "price": null,
-    "asks": [],
-    "item_fits": false,
+    "picked": "c02208",
+    "picked_name": "Navy oak tv stand, 81 inch tv, 51 cm",
+    "picked_reserve": 215,
+    "state": "TASK_STATE_COMPLETED",
+    "price": 230.0,
+    "asks": [
+      301,
+      260,
+      230
+    ],
+    "item_fits": true,
     "ask_below_reserve": false,
     "sold_below_reserve": false,
-    "pass": false
+    "pass": true
   }
 ]
