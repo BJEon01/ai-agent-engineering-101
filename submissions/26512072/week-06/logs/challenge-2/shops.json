@@ -7,7 +7,7 @@
    "office chair"
   ],
   "markup": 0.93,
-  "port": 42413
+  "port": 36463
  },
  {
   "name": "Home Basics",
@@ -17,7 +17,7 @@
    "dining chair"
   ],
   "markup": 1.02,
-  "port": 36755
+  "port": 38537
  },
  {
   "name": "Nordic Room",
@@ -27,7 +27,7 @@
    "office chair"
   ],
   "markup": 1.1,
-  "port": 41663
+  "port": 35919
  },
  {
   "name": "Budget Barn",
@@ -37,7 +37,7 @@
    "shoe rack"
   ],
   "markup": 1.29,
-  "port": 60337
+  "port": 39769
  },
  {
   "name": "Loft Supply",
@@ -47,7 +47,7 @@
    "stool"
   ],
   "markup": 0.91,
-  "port": 49279
+  "port": 52645
  },
  {
   "name": "Casa Mia",
@@ -56,7 +56,7 @@
    "wardrobe"
   ],
   "markup": 1.21,
-  "port": 58587
+  "port": 52691
  },
  {
   "name": "Urban Nest",
@@ -66,7 +66,7 @@
    "shoe rack"
   ],
   "markup": 0.96,
-  "port": 42359
+  "port": 39569
  },
  {
   "name": "The Furniture Yard",
@@ -76,7 +76,7 @@
    "tv stand"
   ],
   "markup": 1.03,
-  "port": 37431
+  "port": 43047
  },
  {
   "name": "Bright Corner",
@@ -86,7 +86,7 @@
    "shoe rack"
   ],
   "markup": 1.15,
-  "port": 41925
+  "port": 41781
  },
  {
   "name": "Maple Street",
@@ -96,7 +96,7 @@
    "nightstand"
   ],
   "markup": 1.04,
-  "port": 47731
+  "port": 42007
  },
  {
   "name": "Second Life",
@@ -105,7 +105,7 @@
    "desk lamp"
   ],
   "markup": 1.25,
-  "port": 36559
+  "port": 58205
  },
  {
   "name": "Quiet Living",
@@ -115,7 +115,7 @@
    "dining table"
   ],
   "markup": 1.18,
-  "port": 55981
+  "port": 47157
  },
  {
   "name": "Studio Nine",
@@ -125,7 +125,7 @@
    "office chair"
   ],
   "markup": 1.14,
-  "port": 35589
+  "port": 38585
  },
  {
   "name": "Harbor Home",
@@ -135,7 +135,7 @@
    "stool"
   ],
   "markup": 1.13,
-  "port": 54205
+  "port": 46977
  },
  {
   "name": "Pine & Co",
@@ -145,7 +145,7 @@
    "office chair"
   ],
   "markup": 0.96,
-  "port": 53761
+  "port": 42005
  },
  {
   "name": "Workspace Hub",
@@ -155,7 +155,7 @@
    "shoe rack"
   ],
   "markup": 1.26,
-  "port": 49471
+  "port": 60825
  },
  {
   "name": "Cozy Den",
@@ -165,7 +165,7 @@
    "stool"
   ],
   "markup": 1.05,
-  "port": 43357
+  "port": 41851
  },
  {
   "name": "Grand Hall",
@@ -175,7 +175,7 @@
    "stool"
   ],
   "markup": 1.04,
-  "port": 40979
+  "port": 55779
  },
  {
   "name": "Little Flat",
@@ -185,7 +185,7 @@
    "wardrobe"
   ],
   "markup": 1.06,
-  "port": 35059
+  "port": 60541
  },
  {
   "name": "Atelier",
@@ -195,6 +195,6 @@
    "dining table"
   ],
   "markup": 1.04,
-  "port": 35043
+  "port": 54531
  }
 ]

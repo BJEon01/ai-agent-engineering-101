@@ -18,7 +18,7 @@ import asyncio
 import json
 
 import harness
-from catalog import CATEGORY_WORDS, _tokens
+from catalog import _tokens
 from buyer import A2AClient, negotiate, state, text_of, last_number
 
 SYSTEM = ("You are a purchasing agent that buys a shopping list from many shops with one total budget. "
@@ -29,7 +29,8 @@ PLAN = ("Shopping list:\n{items}\n\nShops (id | name | what the shop says it sel
 ALLOC = ("Total budget for everything: {budget}. Already spent: {spent}.\n"
          "Open quotes (item | shop | the item the shop offers | its current ask):\n{board}\n\n"
          "For every item number listed, choose exactly one shop from its quotes and a price cap: the most you "
-         "will pay for that item. Every item must be bought, so the caps must add up to at most {left}. "
+         "will pay for that item. Every item must be bought, so the caps must add up to at most {left}, and "
+         "should use most of it: money left unused while an item is not bought is wasted. "
          "Shops usually come down 10 to 25 percent from their opening ask, so a cap below the ask is normal.\n"
          'JSON: {{"items": {{"<item number>": {{"shop": "<shop id>", "cap": <whole number>}}, ...}}}}')
 
@@ -67,7 +68,28 @@ def fit_caps(choice, quotes, left):
         log(f"[guard] caps add up to {total} > {left}: scaled down")
         for v in out.values():
             v[1] = int(v[1] * left / total)
+    elif total < left:  # spread the unused budget, but never above a shop's ask
+        room = {k: q["ask"] - cap for k, (q, cap) in out.items()}
+        spare = left - total
+        if sum(room.values()) > 0:
+            for k, v in out.items():
+                v[1] += min(room[k], int(spare * room[k] / sum(room.values())))
+            log(f"[guard] caps added up to {total} < {left}: unused budget spread up to the asks "
+                f"-> {sum(v[1] for v in out.values())}")
     return out
+
+
+def shops_for(desc, shops, skip):
+    """Shops whose card names a kind of item that matches the description, longest match first."""
+    want = set(_tokens(desc))
+    ranked = []
+    for s in shops:
+        if s["id"] in skip:
+            continue
+        best = max((len(p.split()) for p in s["sells"].split(", ") if set(_tokens(p)) <= want), default=0)
+        if best:
+            ranked.append((-best, s["id"], s))
+    return [s for _, _, s in sorted(ranked)]
 
 
 async def main():
@@ -95,16 +117,14 @@ async def main():
     log("[plan] " + "; ".join(f"item {k}: {[s['id'] for s in v]}" for k, v in picks.items()))
 
     bought, spent, tried = {}, 0, {k: set() for k in picks}
-    for rnd in (1, 2):
+    for rnd in (1, 2, 3):
         todo = [k for k in picks if k not in bought]
         if not todo:
             break
         # quote: every remaining item at its (untried) shops, all at once
         jobs = [(k, s) for k in todo for s in picks[k] if s["id"] not in tried[k]]
-        if rnd == 2:  # second round: shops not tried yet that the card says sell the same kind of thing
-            jobs = [(k, s) for k in todo for s in shops if s["id"] not in tried[k]
-                    and set(_tokens(wanted[k - 1])) & set(_tokens(s["sells"])) & CATEGORY_WORDS]
-            jobs = [j for n, j in enumerate(jobs) if [x[0] for x in jobs[:n]].count(j[0]) < 2]  # two per item
+        if rnd > 1:  # later rounds: untried shops whose card names this kind of item
+            jobs = [(k, s) for k in todo for s in shops_for(wanted[k - 1], shops, tried[k])[:2]]
         got = await asyncio.gather(*(quote(s, k, wanted[k - 1]) for k, s in jobs))
         quotes = {}
         for q in got:
