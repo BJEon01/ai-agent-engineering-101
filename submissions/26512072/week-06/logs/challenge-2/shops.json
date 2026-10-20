@@ -1,0 +1,200 @@
+[
+ {
+  "name": "Oak & Iron",
+  "categories": [
+   "bookshelf",
+   "nightstand",
+   "office chair"
+  ],
+  "markup": 0.93,
+  "port": 42413
+ },
+ {
+  "name": "Home Basics",
+  "categories": [
+   "coffee table",
+   "desk lamp",
+   "dining chair"
+  ],
+  "markup": 1.02,
+  "port": 36755
+ },
+ {
+  "name": "Nordic Room",
+  "categories": [
+   "dining table",
+   "floor lamp",
+   "office chair"
+  ],
+  "markup": 1.1,
+  "port": 41663
+ },
+ {
+  "name": "Budget Barn",
+  "categories": [
+   "bookshelf",
+   "desk lamp",
+   "shoe rack"
+  ],
+  "markup": 1.29,
+  "port": 60337
+ },
+ {
+  "name": "Loft Supply",
+  "categories": [
+   "desk",
+   "nightstand",
+   "stool"
+  ],
+  "markup": 0.91,
+  "port": 49279
+ },
+ {
+  "name": "Casa Mia",
+  "categories": [
+   "bookshelf",
+   "wardrobe"
+  ],
+  "markup": 1.21,
+  "port": 58587
+ },
+ {
+  "name": "Urban Nest",
+  "categories": [
+   "desk lamp",
+   "nightstand",
+   "shoe rack"
+  ],
+  "markup": 0.96,
+  "port": 42359
+ },
+ {
+  "name": "The Furniture Yard",
+  "categories": [
+   "desk",
+   "dining table",
+   "tv stand"
+  ],
+  "markup": 1.03,
+  "port": 37431
+ },
+ {
+  "name": "Bright Corner",
+  "categories": [
+   "bookshelf",
+   "nightstand",
+   "shoe rack"
+  ],
+  "markup": 1.15,
+  "port": 41925
+ },
+ {
+  "name": "Maple Street",
+  "categories": [
+   "desk lamp",
+   "floor lamp",
+   "nightstand"
+  ],
+  "markup": 1.04,
+  "port": 47731
+ },
+ {
+  "name": "Second Life",
+  "categories": [
+   "bookshelf",
+   "desk lamp"
+  ],
+  "markup": 1.25,
+  "port": 36559
+ },
+ {
+  "name": "Quiet Living",
+  "categories": [
+   "desk lamp",
+   "dining chair",
+   "dining table"
+  ],
+  "markup": 1.18,
+  "port": 55981
+ },
+ {
+  "name": "Studio Nine",
+  "categories": [
+   "dining chair",
+   "dining table",
+   "office chair"
+  ],
+  "markup": 1.14,
+  "port": 35589
+ },
+ {
+  "name": "Harbor Home",
+  "categories": [
+   "nightstand",
+   "shoe rack",
+   "stool"
+  ],
+  "markup": 1.13,
+  "port": 54205
+ },
+ {
+  "name": "Pine & Co",
+  "categories": [
+   "dining chair",
+   "nightstand",
+   "office chair"
+  ],
+  "markup": 0.96,
+  "port": 53761
+ },
+ {
+  "name": "Workspace Hub",
+  "categories": [
+   "coffee table",
+   "floor lamp",
+   "shoe rack"
+  ],
+  "markup": 1.26,
+  "port": 49471
+ },
+ {
+  "name": "Cozy Den",
+  "categories": [
+   "desk lamp",
+   "dining chair",
+   "stool"
+  ],
+  "markup": 1.05,
+  "port": 43357
+ },
+ {
+  "name": "Grand Hall",
+  "categories": [
+   "nightstand",
+   "office chair",
+   "stool"
+  ],
+  "markup": 1.04,
+  "port": 40979
+ },
+ {
+  "name": "Little Flat",
+  "categories": [
+   "dining table",
+   "tv stand",
+   "wardrobe"
+  ],
+  "markup": 1.06,
+  "port": 35059
+ },
+ {
+  "name": "Atelier",
+  "categories": [
+   "bookshelf",
+   "coffee table",
+   "dining table"
+  ],
+  "markup": 1.04,
+  "port": 35043
+ }
+]

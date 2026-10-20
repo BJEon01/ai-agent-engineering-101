@@ -91,13 +91,16 @@ def receipt(t):
     return None
 
 
-async def negotiate(client, request, budget, item_label=None, logf=log, tag="buyer"):
-    """One negotiation with one seller. Returns {"status": deal|walked|rejected|error, "price", "summary"}."""
+async def negotiate(client, request, budget, item_label=None, logf=log, tag="buyer", task=None):
+    """One negotiation with one seller. Returns {"status": deal|walked|rejected, "price", "asks", "offers"}.
+    `task` continues a negotiation that was already opened (challenge 2 opens it to get a quote)."""
     item_label = item_label or request
     asks, offers = [], []
-    t = await client.send(f"I want to buy {request}")
+    t = task
+    if t is None:
+        t = await client.send(f"I want to buy {request}")
+        logf(f"[{tag}] -> 'I want to buy {request}'  <- {state(t)} | {text_of(t)}")
     tid = t.get("id")
-    logf(f"[{tag}] -> 'I want to buy {request}'  <- {state(t)} | {text_of(t)}")
     for rnd in range(1, MAX_ROUNDS + 1):
         st = state(t)
         if st == "TASK_STATE_COMPLETED":
