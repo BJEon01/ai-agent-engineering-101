@@ -91,8 +91,22 @@ def generate(seed=6):
 
 # ---------------------------------------------------------------- search
 
+SYNONYMS = {  # buyer words -> catalog words, so a description finds the category
+    "couch": "sofa", "settee": "sofa", "light": "lamp", "lighting": "lamp", "standing": "floor",
+    "closet": "wardrobe", "bedside": "nightstand", "television": "tv", "shoes": "shoe", "books": "bookshelf",
+    "eat": "dining", "dinner": "dining", "seat": "chair", "wood": "wooden", "iron": "metal",
+    "hangers": "wardrobe", "drawers": "nightstand", "people": "seats", "pairs": "shoe",
+}
+
+
+STOPWORDS = set("a an the i to for of and or with my me want buy about some something that can where "
+                "is it in on at by be as made holds enough sit beside cm wide tall".split())
+CATEGORY_WORDS = {w for c in CATEGORIES for w in c.split()}
+
+
 def _tokens(text):
-    return re.findall(r"[a-z]+", text.lower())
+    words = [w for w in re.findall(r"[a-z]+", text.lower()) if w not in STOPWORDS]
+    return words + [SYNONYMS[w] for w in words if w in SYNONYMS]
 
 
 class Index:
@@ -109,7 +123,7 @@ class Index:
         nums = [int(x) for x in re.findall(r"\d+", query)]
         scored = []
         for item, doc in zip(self.items, self.docs):
-            s = sum(self.idf.get(t, 0) for t in q & doc)
+            s = sum(self.idf.get(t, 0) * (2 if t in CATEGORY_WORDS else 1) for t in q & doc)
             if nums:
                 vals = [v for v in (item["height_cm"], item["width_cm"], item["capacity"]) if v]
                 s += sum(max(0.0, 2.0 - min(abs(v - n) for v in vals) / 10) for n in nums)

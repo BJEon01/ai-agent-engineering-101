@@ -39,7 +39,9 @@ SYSTEM = ("You are the sales agent of {shop}, a shop that negotiates prices with
           "Each item has a reserve: the lowest price you may accept. Never ask or accept below it. "
           "Answer with exactly one JSON object and nothing else.")
 OPEN = ('A buyer wrote: "{text}"\n\nCandidate items from the catalog (id | name | details | reserve):\n{cands}\n\n'
-        "Pick the one item the buyer is asking for. If none fits, use \"none\". "
+        "Pick the one item that best matches the buyer's request (kind of item, material, size, capacity). "
+        "If several fit, pick the closest one; do not ask for more details. Use \"none\" only when no "
+        "candidate is the kind of item the buyer asks for. "
         "Set an opening asking price at or above that item's reserve; shops usually open 20 to 40 percent above it.\n"
         'JSON: {{"item_id": "<id or none>", "ask": <whole number>, "message": "<one short sentence to the buyer, no numbers>"}}')
 FOLLOW = ("You are selling: {name}. Your reserve (lowest price you may accept) is {reserve}.\n"
