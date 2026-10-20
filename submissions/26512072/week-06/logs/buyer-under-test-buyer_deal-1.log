@@ -1,0 +1,4 @@
+[buyer] lamp, budget 120, seller http://127.0.0.1:33379, harness: own harness (harness.py) -> Qwen/Qwen3.8-27B on local vLLM, temperature 0.2, thinking off
+[buyer] card: Kit Shop | Ask for an item, then send a price. The shop answers with a counteroffer or a receipt.
+[buyer] -> 'I want to buy a lamp'  <- TASK_STATE_INPUT_REQUIRED | lamp: asking 130. Send your offer as a number.
+[buyer] error: APIConnectionError: Connection error.
